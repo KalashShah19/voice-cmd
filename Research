@@ -1,0 +1,19 @@
+Functional Requirements :-
+  Register Login
+  Speech Recognition
+  Command Interpretation
+  Expense tracking
+  Income tracking
+	Debt Tracking
+  Investment Tracking
+  Manage Budget\
+  Auto Calculations
+  Savings Goals 
+  Report and Analysis
+  Notifications and Alert
+
+Technlogies :-
+  Django
+  Flask
+  FastAPI
+
