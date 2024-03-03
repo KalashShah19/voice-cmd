@@ -1,0 +1,59 @@
+Probem Statement :-
+	Managing personal finances efficiently is crucial for individuals to achieve their financial goals, maintain financial stability, and make informed financial decisions. Though there are many platforms eavailable but understanding them and getting used to them is a bit time consuming task. Findibng features and sections of required and desiered thinfgs might be difficult for beginners and also for elder people. However, tracking income, expenses, savings, investments, and debts manually can be time-consuming and prone to errors. A personal finance tracker application aims to streamline the process by providing users with a centralized platform to manage their finances effectively. 
+
+Project Definition :- 
+	This project is developed for providing hands-free user experience through voice control module. It also helps everyone of every age group to easily understand the UI and start interaction immediately even for begginners. There is no need to find anything in the app, just speak what you need or what you want to do and leave it on the app for the job to be done. 
+
+Objectives :- 
+	Provide hands free interaction through voice commands and assustance.
+	Develop a user-friendly interface for recording and categorizing income and expenses.
+	Implement budgeting tools to help users set and monitor monthly budgets for different expense categories.
+	Enable users to set savings goals and track progress towards achieving them.
+	Provide users with insights into investment performance, asset allocations, and portfolio optimization.
+	Offer debt management features to help users track outstanding debts and prioritize repayment strategies.
+	Generate customizable reports and visualizations to analyze financial data and trends over time.
+	Implement notifications and alerts to keep users informed about important financial events and milestones.
+
+Functional Requirements :-
+	Register Login
+	Speech Recognition
+	Command Interpretation
+	Expense tracking
+	Income tracking
+	Debt Tracking
+	Investment Tracking
+	Manage Budgets
+	Reminders
+	Notes
+	Auto Calculations
+	Savings Goals 
+	Report and Analysis
+	Notifications and Alert
+
+non Functional Requirements :-
+	Security
+	Availability
+	Reliability
+	Flexibilty
+	Maintability
+	Portability
+	Performance
+
+Technlogies :-
+	Django
+	Flask
+	FastAPI
+
+Database Tables :-
+	users
+	budgets
+	commmands
+	investments
+	incomes
+	expenses
+	alerts
+	debts
+	goals
+	notes
+	reminders
+	
