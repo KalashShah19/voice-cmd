@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Recognition</title>
+</head>
+<body>
+    <h1>Speech Recognition</h1>
+    <button id="recordButton" onclick="recordAudio()">Record Audio</button>
+    <button id="stopButton" onclick="stopRecording()" style="display:none">Stop Recording</button>
+    <div id="output"></div>
+
+    <script>
+        let recorder;
+        const output = document.getElementById('output');
+
+        function recordAudio() {
+            console.log("Recording");
+            output.textContent = ""
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    recorder = new MediaRecorder(stream);
+                    const audioChunks = [];
+
+                    recorder.addEventListener('dataavailable', event => {
+                        if (event.data.size > 0) {
+                            audioChunks.push(event.data);
+                        }
+                    });
+
+                    recorder.addEventListener('stop', () => {
+                        const audioBlob = new Blob(audioChunks);
+                        const formData = new FormData();
+                        formData.append('audio', audioBlob);
+                        
+                        console.log("Stopped");
+                        fetch('/recognize', {
+
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            output.innerText = data.transcription || data.error;
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    });
+
+                    recorder.start();
+                    document.getElementById('recordButton').style.display = 'none';
+                    document.getElementById('stopButton').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error accessing microphone:', error);
+                });
+        }
+
+        function stopRecording() {
+            recorder.stop();
+            document.getElementById('recordButton').style.display = 'block';
+            document.getElementById('stopButton').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
