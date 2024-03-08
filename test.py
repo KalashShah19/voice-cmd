@@ -10,7 +10,7 @@ recorded_audio_path = None
 
 @app.route('/')
 def index():
-    return render_template('test.html')
+    return render_template('voice.html')
 
 @app.route('/process_audio', methods=['POST'])
 def process_audio():
