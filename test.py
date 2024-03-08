@@ -14,6 +14,7 @@ def index():
 
 @app.route('/process_audio', methods=['POST'])
 def process_audio():
+    print("Processing")
     global recorded_audio_path
     audio_file = request.files['audio']
     audio_dir = 'recorded_audio'
@@ -21,34 +22,34 @@ def process_audio():
         os.makedirs(audio_dir)
     filename = f'recorded_audio_{int(time.time())}.wav'
     filepath = os.path.join(audio_dir, filename)
-    # audio_file.save(filepath)
+    audio_file.save(filepath)
     recorded_audio_path = filepath
-    print("Recoding Sucess")
-    print("File Path = " + recorded_audio_path)
+    print('Audio recorded successfully')
     recognize_speech()
     return 'Audio recorded successfully'
 
 @app.route('/recognize_speech')
 def recognize_speech():
-    print("Recognizing")
+    print("Recoginizing")
     global recorded_audio_path
     if recorded_audio_path is None:
+        print("No Audio Recorded")
         return 'No audio recorded', 400
 
     recognizer = sr.Recognizer()
     with sr.AudioFile(recorded_audio_path) as source:
         audio_data = recognizer.record(source)
-
+        print(audio_data)
     try:
         text = recognizer.recognize_google(audio_data)
-        print("Command = " + text)
+        print("Text = " + text)
         return jsonify({'transcription': text}), 200
     except sr.UnknownValueError:
-        print("Error")
-        return jsonify({'error': 'Could not understand audio'}), 400
+        print("Not Clear")
+        return 'Could not understand audio', 400
     except sr.RequestError as e:
-        print("Error : " + e)
-        return jsonify({'error': f'Speech recognition service error: {e}'}), 500
+        print("Error = " + e)
+        return f'Speech recognition service error: {e}', 500
 
 if __name__ == '__main__':
     app.run(debug=True)

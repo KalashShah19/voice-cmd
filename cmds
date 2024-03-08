@@ -1,1 +1,4 @@
 pip install Flask SpeechRecognition
+
+lsof -i tcp:5000
+kill -9 <PID>
