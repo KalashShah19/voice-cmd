@@ -1,4 +1,8 @@
-pip install Flask SpeechRecognition
+pip install Flask 
 
 lsof -i tcp:5000
 kill -9 <PID>
+
+https://teleporthq.io/ (for Frontend Template)
+
+pip install SpeechRecognition

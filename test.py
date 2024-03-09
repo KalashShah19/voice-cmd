@@ -4,6 +4,7 @@ import time
 import speech_recognition as sr
 
 app = Flask(__name__)
+app = Flask(__name__, static_folder='templates/static')
 
 # Global variable to store recorded audio
 recorded_audio_path = None
@@ -11,6 +12,14 @@ recorded_audio_path = None
 @app.route('/')
 def index():
     return render_template('voice.html')
+
+@app.route('/home')
+def home():
+    return render_template('index.html')
+
+@app.route('/features')
+def features():
+    return render_template('features.html')
 
 @app.route('/process_audio', methods=['POST'])
 def process_audio():

@@ -13,7 +13,7 @@
   --dl-size-size-xlarge: 192px;
   --dl-size-size-xsmall: 16px;
   --dl-space-space-unit: 16px;
-  --dl-color-primary-100: #003EB3;
+  --dl-color-primary-100: #00ffffff;
   --dl-color-primary-300: #0074F0;
   --dl-color-primary-500: #14A9FF;
   --dl-color-primary-700: #85DCFF;
@@ -26,7 +26,7 @@
   --dl-space-space-halfunit: 8px;
   --dl-space-space-sixunits: 96px;
   --dl-space-space-twounits: 32px;
-  --dl-color-custom-primary1: #BDE420;
+  --dl-color-custom-primary1: #00ffffff;
   --dl-color-custom-primary2: #97B618;
   --dl-radius-radius-radius2: 2px;
   --dl-radius-radius-radius4: 4px;
@@ -269,13 +269,44 @@
 .socialIcons {
   fill: var(--dl-color-custom-neutral-light);
 }
-.Content {
+.heading3 {
+  font-size: 20px;
+  text-align: center;
+  font-family: Hind;
+  font-weight: 600;
+  line-height: 150%;
+}
+.overline {
+  font-size: 12px;
+  font-family: Hind;
+  font-weight: 700;
+  line-height: 150%;
+  text-transform: uppercase;
+}
+.bodySmall {
   font-size: 16px;
-  font-family: Inter;
+  font-family: Hind;
   font-weight: 400;
-  line-height: 1.15;
-  text-transform: none;
-  text-decoration: none;
+  line-height: 150%;
+}
+.heading1 {
+  font-size: 48px;
+  text-align: center;
+  font-family: Hind;
+  font-weight: 700;
+  line-height: 150%;
+}
+.bodyLarge {
+  font-size: 18px;
+  font-family: Hind;
+  font-weight: 400;
+  line-height: 150%;
+}
+.heading2 {
+  font-size: 35px;
+  font-family: Hind;
+  font-weight: 600;
+  line-height: 150%;
 }
 .Heading {
   font-size: 32px;
@@ -292,42 +323,11 @@
   line-height: 150%;
   text-transform: uppercase;
 }
-.heading1 {
-  font-size: 48px;
-  text-align: center;
-  font-family: Hind;
-  font-weight: 700;
-  line-height: 150%;
-}
-.heading2 {
-  font-size: 35px;
-  font-family: Hind;
-  font-weight: 600;
-  line-height: 150%;
-}
-.heading3 {
-  font-size: 20px;
-  text-align: center;
-  font-family: Hind;
-  font-weight: 600;
-  line-height: 150%;
-}
-.bodyLarge {
-  font-size: 18px;
-  font-family: Hind;
-  font-weight: 400;
-  line-height: 150%;
-}
-.bodySmall {
+.Content {
   font-size: 16px;
-  font-family: Hind;
+  font-family: Inter;
   font-weight: 400;
-  line-height: 150%;
-}
-.overline {
-  font-size: 12px;
-  font-family: Hind;
-  font-weight: 700;
-  line-height: 150%;
-  text-transform: uppercase;
+  line-height: 1.15;
+  text-transform: none;
+  text-decoration: none;
 }
