@@ -10,7 +10,7 @@ body {
     align-content: center;
     flex-direction: column;
     width: 100%;
-    min-height: 100vh;
+    max-height: 100vh;
     font-family: Montserrat;
 }
 
@@ -31,6 +31,30 @@ body {
     filter: brightness(2.5);
 }
 
+/* Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Fade Out Animation */
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.fade-in { animation: fadeIn 3s; }
+
+.fade-out { animation: fadeOut 3s; }
+
 .container {
     position: relative;
     width: 100vw;
@@ -41,7 +65,7 @@ body {
     position: relative;
     color: black;
     padding: 25px 50px;
-    font-size: 25px;
+    font-size: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -49,6 +73,7 @@ body {
 }
 
 p {
+    height: 20px;
     background: white;
     padding: 10px 20px;
     border-radius: 10px;
@@ -56,6 +81,7 @@ p {
     text-align: left;
     width: 60%;
 }
+
 p:first-letter {
     text-transform: capitalize;
 }

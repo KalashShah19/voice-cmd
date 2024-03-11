@@ -12,7 +12,7 @@
   <h1 style="color:white; text-align: center;"> AI </h1>
   <span style="color:skyblue; text-align: center;"> Click the Button to Talk with AI </span>
   <div id="startButton" class="imageWrapper">
-    <img src="https://shu-vro.github.io/Artificial-Intelligence//resources/img/bg.jpeg" alt="AI">
+    <img id="btn" src="{{ url_for('static', filename='images/aiBtn.png') }}" alt="AI">
   </div>
   <center>
     <p id="result" style="color:darkblue"></p>
@@ -24,6 +24,7 @@
     recognition.continuous = true;
     recognition.lang = 'en-US';
     var BTNstart = document.getElementById('startButton');
+    var btn = document.getElementById('btn');
     var TXTresult = document.getElementById('result');
     var TXTresponse = document.getElementById('response');
     var result = "";
@@ -34,18 +35,26 @@
       result = event.results[0][0].transcript;
       result = result.toLowerCase();
       TXTresult.innerHTML = result;
+      btn.className = "fade-out";
+      btn.src = "{{ url_for('static', filename='images/aiBtn.png') }}";
       wordRecognition();
     };
 
     BTNstart.addEventListener('click', function () {
       if (flag == 0) {
+        btn.className = "fade-in";
+        btn.src = "{{ url_for('static', filename='images/ai.jpg') }}";
         TXTresult.innerHTML = "Listenning...";
+        TXTresponse.innerHTML = "";
         recognition.start();
         flag = 1;
       }
       else {
+        btn.className = "fade-out";
+        btn.src = "{{ url_for('static', filename='images/aiBtn.png') }}";
         TXTresult.innerHTML = "";
         recognition.stop();
+        TXTresponse.innerHTML = "";
         flag = 0;
       }
     });
@@ -54,25 +63,77 @@
       console.log(result);
       console.log("word recognition");
       var words = ["home", "features", "login", "register"];
+      var found = false;
+
       for (word in words) {
-        if (result.includes(words[word])) {
-          TXTresponse.innerHTML = "Redirecting...";
-          var page = words[word];
-          setTimeout(2000)
-          document.location.href = page;
-          // console.log("in");
-        }
-        if (result.includes("back")) {
-          window.history.go(-1);
-        }
-        if (result.includes("hi")) {
-          TXTresponse.innerHTML = "Hello, What is Your Name?";
-        }
-        if (result.includes("hello")) {
-          TXTresponse.innerHTML = "Hi, What is Your Name?";
+        if (!found) {
+          if (result.includes(words[word])) {
+            var page = words[word];
+            const speechText = new SpeechSynthesisUtterance("Okay, taking you to " + page + " page.");
+            TXTresponse.innerHTML = "Okay, taking you to " + page + " page.";
+            window.speechSynthesis.speak(speechText);
+            setTimeout(function () {
+              document.location.href = page;
+            }, 2000);
+            found = true;
+          }
+
+          else if (result.includes("back")) {
+            const speechText = new SpeechSynthesisUtterance("Okay, taking you to " + page + " page.");
+            window.speechSynthesis.speak(speechText);
+            TXTresponse.innerHTML = "Okay, taking you to Previous page.";
+            setTimeout(function () {
+              window.history.go(-1);
+            }, 200);
+            found = true;
+          }
+
+          else if (result.includes("previous")) {
+            const speechText = new SpeechSynthesisUtterance("Okay, taking you to Previous page.");
+            window.speechSynthesis.speak(speechText);
+            TXTresponse.innerHTML = "Okay, taking you to Previous page.";
+            setTimeout(function () {
+              window.history.go(-1);
+            }, 200);
+            found = true;
+          }
+
+          else if (result.includes("hi")) {
+            const speechText = new SpeechSynthesisUtterance("Hello! How can I assist you today?");
+            window.speechSynthesis.speak(speechText);
+            TXTresponse.innerHTML = "Hello! How can I assist you today?";
+            found = true;
+          }
+
+          else if (result.includes("hello")) {
+            const speechText = new SpeechSynthesisUtterance("Hi! How can I assist you today?");
+            window.speechSynthesis.speak(speechText);
+            TXTresponse.innerHTML = "Hi! How can I assist you today?";
+            found = true;
+          }
+
+          else if (result.includes("what is your name")) {
+            const speechText = new SpeechSynthesisUtterance("I am Voice Finance Assistant");
+            window.speechSynthesis.speak(speechText);
+            TXTresponse.innerHTML = "I am Voice Finance Assistant";
+            found = true;
+          }
+
+          else if (result.includes("who are you")) {
+            const speechText = new SpeechSynthesisUtterance("I am Voice Finance Assistant");
+            window.speechSynthesis.speak(speechText);
+            TXTresponse.innerHTML = "I am Voice Finance Assistant";
+            found = true;
+          }
         }
       }
-    }   
+
+      if (!found) {
+        const speechText = new SpeechSynthesisUtterance("Sorry, I didn't Understand.");
+        window.speechSynthesis.speak(speechText);
+        TXTresponse.innerHTML = "Sorry, I didn't Understand.";
+      }
+    }
   </script>
 </body>
 
