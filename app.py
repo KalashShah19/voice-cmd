@@ -21,6 +21,14 @@ def home():
 def features():
     return render_template('features.html')
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
 @app.route('/ai')
 def ai():
     return render_template('ai.html')
