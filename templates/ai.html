@@ -9,15 +9,14 @@
 </head>
 
 <body>
-  <center>
-    <h1 style="color:white"> AI </h1>
-    <span style="color:skyblue"> Click the Button to Talk with AI </span>
-  </center>
+  <h1 style="color:white; text-align: center;"> AI </h1>
+  <span style="color:skyblue; text-align: center;"> Click the Button to Talk with AI </span>
   <div id="startButton" class="imageWrapper">
     <img src="https://shu-vro.github.io/Artificial-Intelligence//resources/img/bg.jpeg" alt="AI">
   </div>
   <center>
     <p id="result" style="color:darkblue"></p>
+    <p id="response" style="color:darkblue; text-align: right;"></p>
   </center>
 
   <script>
@@ -26,7 +25,8 @@
     recognition.lang = 'en-US';
     var BTNstart = document.getElementById('startButton');
     var TXTresult = document.getElementById('result');
-    var result = ""
+    var TXTresponse = document.getElementById('response');
+    var result = "";
     var flag = 0;
 
     recognition.onresult = function (event) {
@@ -38,12 +38,12 @@
     };
 
     BTNstart.addEventListener('click', function () {
-      if (flag == 0){
+      if (flag == 0) {
         TXTresult.innerHTML = "Listenning...";
         recognition.start();
         flag = 1;
       }
-      else{
+      else {
         TXTresult.innerHTML = "";
         recognition.stop();
         flag = 0;
@@ -56,15 +56,20 @@
       var words = ["home", "features", "login", "register"];
       for (word in words) {
         if (result.includes(words[word])) {
+          TXTresponse.innerHTML = "Redirecting...";
           var page = words[word];
+          setTimeout(2000)
           document.location.href = page;
           // console.log("in");
-          // console.log(page);
-          // console.log("Word =" + word);
-          // console.log("Page");
         }
         if (result.includes("back")) {
           window.history.go(-1);
+        }
+        if (result.includes("hi")) {
+          TXTresponse.innerHTML = "Hello, What is Your Name?";
+        }
+        if (result.includes("hello")) {
+          TXTresponse.innerHTML = "Hi, What is Your Name?";
         }
       }
     }   

@@ -9,6 +9,8 @@ app = Flask(__name__, static_folder='templates/static')
 # Global variable to store recorded audio
 recorded_audio_path = None
 
+# https://www.youtube.com/watch?v=SYG1jQYIxfQ
+
 @app.route('/')
 def index():
     return render_template('voice.html')
