@@ -1,7 +1,5 @@
-from flask import Flask, render_template, request, jsonify
-import os
-import time
-import speech_recognition as sr
+from flask import Flask, render_template, request, redirect
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app = Flask(__name__, static_folder='templates/static')
@@ -9,7 +7,10 @@ app = Flask(__name__, static_folder='templates/static')
 # Global variable to store recorded audio
 recorded_audio_path = None
 
-# https://www.youtube.com/watch?v=SYG1jQYIxfQ
+# Database Connection - https://www.youtube.com/watch?v=SYG1jQYIxfQ
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 @app.route('/')
 def index():
@@ -38,6 +39,11 @@ def ai():
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+
+@app.route('/create')
+def create():
+    # name = request.args.get('name')
+    return redirect('dashboard')
 
 if __name__ == '__main__':
     app.run(debug=True)
