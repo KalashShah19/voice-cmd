@@ -1,19 +1,23 @@
 from flask import Flask, render_template, request, redirect
-from flask_sqlalchemy import SQLAlchemy
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 app = Flask(__name__, static_folder='templates/static')
 
-# Global variable to store recorded audio
-recorded_audio_path = None
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'voice_finance'
+app.config['MYSQL_HOST'] = 'localhost'
 
-# Database Connection - https://www.youtube.com/watch?v=SYG1jQYIxfQ
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+mysql = MySQL(app)
 
 @app.route('/')
 def index():
+    # cur = mysql.connection.cursor()
+    # cur.execute("select * from users")
+    # data = cur.fetchall()
+    # cur.close()
+    # return render_template('voice.html', data = data)
     return render_template('voice.html')
 
 @app.route('/home')
@@ -32,17 +36,30 @@ def login():
 def register():
     return render_template('register.html')
 
+@app.route('/registration', methods=['POST'])
+def registration():
+    data = request.json
+    # name = request.form.get('name')
+    # email = request.form.get('email')
+    # password = request.form.get('password')
+    # mobile = request.form.get('mobile')
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO users (name,email,password,mobile) VALUES (%s, %s, %s)",(data['name'],data['email'],data['password'],data['mobile']))
+    mysql.connection.commit()
+    cursor.close()
+    print("User Registered")
+    return redirect('login')
+
 @app.route('/ai')
 def ai():
     return render_template('ai.html')
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
-
+    return render_template('dashboard.html')\
+    
 @app.route('/create')
 def create():
-    # name = request.args.get('name')
     return redirect('dashboard')
 
 if __name__ == '__main__':

@@ -679,10 +679,10 @@
 </head>
 
 <body>
-    <link rel="stylesheet" href="static/css/style.css" />
-    <div>
-        <link href="static/css/login.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 
+  <div>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css') }}">
         <div class="login-container">
             <header data-thq="thq-navbar" class="navbarContainer login-navbar-interactive">
                 <span class="login-logo logo">FINANCELY</span>
@@ -748,7 +748,7 @@
             <h1 class="login-features-heading"><br>
                 <span>Register</span><br>
             </h1>
-            <form class="register-form" action="register"> <br><br><br>
+            <form id="form" class="register-form" method="post"> <br><br><br>
                 <center>
                     <h2 style="color:white">
                         <label for="name"> Name : </label>
@@ -761,13 +761,31 @@
                         <input type="password" name="password" id="password"> <br> <br>
                         <label for="cpassword"> Confirm : </label>
                         <input type="password" name="cpassword" id="cpassword"> <br> <br>
-                        <button class="login-button"> Create Account </button>
+                        <input type="submit" class="login-button" value="Create Account">
                     </h2>
                 </center>
             </form>
         </div>
     </div>
     <script data-section-id="navbar" src="https://unpkg.com/@teleporthq/teleport-custom-scripts"></script>
+    <script>
+        document.getElementById("form").addEventListener("submit", function(event) {
+            event.preventDefault(); 
+            var formData = new FormData(this);
+
+            fetch("/registration", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("request sent");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        });
+    </script>
 </body>
 
 </html>
