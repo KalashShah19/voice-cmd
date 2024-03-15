@@ -59,10 +59,30 @@ header {
 .card h3 {
     margin-top: 0;
 }
+
 footer {
     background-color: #333;
     color: #fff;
     text-align: center;
     padding: 20px;
     bottom: 0;
+}
+
+.bar {
+    background-color: grey;
+    width: 100%;
+}
+
+.progress{
+    background-color: rgb(28, 205, 28);
+    color:white;
+    text-align: center;
+}
+
+.income{
+    color: rgb(28, 205, 28);
+}
+
+.expense{
+    color:red;
 }

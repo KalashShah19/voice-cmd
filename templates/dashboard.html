@@ -135,7 +135,6 @@
 
 <body id="home">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-
     <div>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
 
@@ -204,38 +203,54 @@
                         </div>
                     </div>
                 </header>
-            </div> <br> <br> <br> <br>
+            </div> <br> <br> <br><br>
             <div class="dashContainer">
                 <h1 style="color:cyan; text-align: center;">Dashboard</h1> <br>
                 <h3 style="color:white; text-align: center;">Welcome Kalash.</h3>
                 <div class="dashboard">
                     <h2>Overview</h2>
                     <div class="card">
-                        <h3>Account Balance</h3>
-                        <p>$1,500.00</p>
-                    </div>
-                    <h2>Recent Transactions</h2>
-                    <div class="card">
+                        <h3>Total Balance</h3>
                         <ul>
-                            <li>Transaction 1: $50.00</li>
-                            <li>Transaction 2: $100.00</li>
-                            <li>Transaction 3: $75.00</li>
+                            <li>
+                                <p>$1,500.00</p>
+                            </li>
                         </ul>
-                    </div>
-                    <h2>Budgets</h2>
-                    <div class="card">
-                        <h3>Monthly Budget</h3>
-                        <p>$500.00</p>
-                    </div>
-                    <h2>Investments</h2>
-                    <div class="card">
-                        <h3>Stock Portfolio</h3>
-                        <p>Total value: $10,000.00</p>
                     </div>
                     <h2>Goals</h2>
                     <div class="card">
                         <h3>Financial Goals</h3>
                         <p>Save $1,000 by the end of the month</p>
+                        <div class="bar">
+                            <div class="progress" style="width:25%"> <span> 25% </span></div>
+                        </div>
+                        <span id="cureent"> 250 </span> / <span id="total"> 1000 </span>
+                    </div>
+                    <h2>Recent Transactions</h2>
+                    <div class="card">
+                        <ul>
+                            <li class="income"> Transaction 1: $50.00</li>
+                            <li class="expense">Transaction 2: $100.00</li>
+                            <li class="income">Transaction 3: $75.00</li>
+                        </ul>
+                    </div>
+                    <h2>Budgets</h2>
+                    <div class="card">
+                        <h3>Monthly Budget</h3>
+                        <ul>
+                            <li>
+                                <p>$500.00</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <h2>Investments</h2>
+                    <div class="card">
+                        <h3>Stock Portfolio</h3>
+                        <ul>
+                            <li>
+                                <p>Total value: $10,000.00</p>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="sidebar">
