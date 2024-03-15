@@ -681,9 +681,10 @@
 <body>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 
-  <div>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css') }}">
+    <div>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css') }}">
         <div class="login-container">
+            
             <header data-thq="thq-navbar" class="navbarContainer login-navbar-interactive">
                 <span class="login-logo logo">FINANCELY</span>
                 <div data-thq="thq-navbar-nav" class="login-desktop-menu">
@@ -753,8 +754,8 @@
                     <h2 style="color:white">
                         <label for="name"> Name : </label>
                         <input type="text" name="name" id="name"> <br> <br>
-                        <label for="number"> Number : </label>
-                        <input type="number" name="number" id="number"> <br> <br>
+                        <label for="mobile"> Number : </label>
+                        <input type="number" name="mobile" id="mobile"> <br> <br>
                         <label for="email"> Email : </label>
                         <input type="email" name="email" id="email"> <br> <br>
                         <label for="password"> Password : </label>
@@ -769,22 +770,30 @@
     </div>
     <script data-section-id="navbar" src="https://unpkg.com/@teleporthq/teleport-custom-scripts"></script>
     <script>
-        document.getElementById("form").addEventListener("submit", function(event) {
-            event.preventDefault(); 
+        document.getElementById("form").addEventListener("submit", function (event) {
+            event.preventDefault();
             var formData = new FormData(this);
-
-            fetch("/registration", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("request sent");
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
+            var pass = document.getElementById("password").value;
+            var cpass = document.getElementById("cpassword").value;
+            if (pass == cpass) {
+                fetch("/registration", {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("request sent");
+                        alert("Registration Successfull !");
+                        window.location.href = 'login';
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
+            } else {
+                alert("Passwords Don't Match");
+            }
         });
+
     </script>
 </body>
 

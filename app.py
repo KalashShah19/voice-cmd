@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -38,17 +38,13 @@ def register():
 
 @app.route('/registration', methods=['POST'])
 def registration():
-    data = request.json
-    # name = request.form.get('name')
-    # email = request.form.get('email')
-    # password = request.form.get('password')
-    # mobile = request.form.get('mobile')
+    data = request.form
     cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO users (name,email,password,mobile) VALUES (%s, %s, %s)",(data['name'],data['email'],data['password'],data['mobile']))
+    cursor.execute("INSERT INTO users (name,email,password,mobile) VALUES (%s, %s, %s, %s)",(data['name'],data['email'],data['password'],data['mobile']))
     mysql.connection.commit()
     cursor.close()
     print("User Registered")
-    return redirect('login')
+    return jsonify({"message": "Redirecting..."}), 200
 
 @app.route('/ai')
 def ai():
@@ -56,11 +52,16 @@ def ai():
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')\
+    return render_template('dashboard.html')
     
-@app.route('/create')
+@app.route('/create', methods=['POST'])
 def create():
-    return redirect('dashboard')
+    name = request.json.get('name')
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO budget (name) VALUES (%s)",(name,))
+    mysql.connection.commit()
+    cursor.close()
+    return jsonify({"message": "Creating..."}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
