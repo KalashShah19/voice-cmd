@@ -62,6 +62,10 @@
   display: flex;
   justify-content: space-between;
 }
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
 .home-links {
   flex: 1;
   display: flex;

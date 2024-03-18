@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, jsonify
-from flask_mysql import MySQL
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 app = Flask(__name__, static_folder='templates/static')
@@ -53,7 +53,7 @@ def ai():
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
-    
+
 @app.route('/budgets')
 def budgets():
     return render_template('budgets.html')

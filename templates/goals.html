@@ -2,143 +2,86 @@
 <html lang="en">
 
 <head>
-    <title> Dashboard </title>
-    <meta property="og:title" content="Superb Imperturbable Llama" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta charset="utf-8" />
-    <meta property="twitter:card" content="summary_large_image" />
-
-    <style data-tag="reset-style-sheet">
-        html {
-            line-height: 1.15;
-        }
-
-        body {
-            margin: 0;
-        }
-
-        * {
-            box-sizing: border-box;
-            border-width: 0;
-            border-style: solid;
-        }
-
-        p,
-        li,
-        ul,
-        pre,
-        div,
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        figure,
-        blockquote,
-        figcaption {
-            margin: 0;
-            padding: 0;
-        }
-
-        button {
-            background-color: transparent;
-        }
-
-        button,
-        input,
-        optgroup,
-        select,
-        textarea {
-            font-family: inherit;
-            font-size: 100%;
-            line-height: 1.15;
-            margin: 0;
-        }
-
-        button,
-        select {
-            text-transform: none;
-        }
-
-        button,
-        [type="button"],
-        [type="reset"],
-        [type="submit"] {
-            -webkit-appearance: button;
-        }
-
-        button::-moz-focus-inner,
-        [type="button"]::-moz-focus-inner,
-        [type="reset"]::-moz-focus-inner,
-        [type="submit"]::-moz-focus-inner {
-            border-style: none;
-            padding: 0;
-        }
-
-        button:-moz-focus,
-        [type="button"]:-moz-focus,
-        [type="reset"]:-moz-focus,
-        [type="submit"]:-moz-focus {
-            outline: 1px dotted ButtonText;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: inherit;
-        }
-
-        input {
-            padding: 2px 4px;
-        }
-
-        img {
-            display: block;
-        }
-
-        html {
-            scroll-behavior: smooth
-        }
-    </style>
-    <style data-tag="default-style-sheet">
-        html {
-            font-family: Inter;
-            font-size: 16px;
-        }
-
-        body {
-            font-weight: 400;
-            font-style: normal;
-            text-decoration: none;
-            text-transform: none;
-            letter-spacing: normal;
-            line-height: 1.15;
-            color: var(--dl-color-gray-black);
-            background-color: var(--dl-color-gray-black);
-        }
-    </style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goals</title>
     <style>
-        @keyframes fade-in-left {
-            0% {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #161616;
+        }
 
-            100% {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-gap: 20px;
+        }
+
+        .goal-card {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            position: relative;
+            /* To position the edit button */
+        }
+
+        .goal-card h2 {
+            margin-top: 0;
+        }
+
+        .goal-card p {
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar-inner {
+            background-color: rgb(11, 208, 11);
+            ;
+            height: 100%;
+        }
+
+        .edit-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .add-goal-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
         }
     </style>
 </head>
 
-<body id="home">
+<body>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <div>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
-
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboard.css') }}">
 
         <div class="home-container">
             <div class="home-header">
@@ -205,83 +148,39 @@
                         </div>
                     </div>
                 </header>
-            </div> <br> <br> <br><br>
-
-            <div class="dashContainer">
-                <h1 style="color:cyan; text-align: center;">Dashboard</h1> <br>
-                <h3 style="color:white; text-align: center;">Welcome Kalash.</h3>
-                <div class="dashboard">
-                    <h2>Overview</h2>
-                    <div class="card">
-                        <h3>Total Balance</h3>
-                        <ul>
-                            <li>
-                                <p>$1,500.00</p>
-                            </li>
-                        </ul>
-                    </div>
-                    <h2>Goals</h2>
-                    <div class="card">
-                        <h3>Financial Goals</h3>
-                        <p>Save $1,000 by the end of the month</p>
-                        <div class="bar">
-                            <div class="progress" style="width:25%"> <span> 25% </span></div>
+            </div>
+            <br> <br> <br> <br>
+            <h1 style="color: cyan;text-align: center;"> Goals </h1>
+            <button class="add-goal-button">Add New Goal</button>
+            <div class="container">
+                <div class="grid">
+                    <div class="goal-card">
+                        <h2>Goal 1</h2>
+                        <p>Amount: $1000</p>
+                        <div class="progress-bar">
+                            <div class="progress-bar-inner" style="width: 40%;"></div>
                         </div>
-                        <span id="cureent"> 250 </span> / <span id="total"> 1000 </span>
+                        <button class="edit-button">Edit</button>
                     </div>
-                    <h2>Recent Transactions</h2>
-                    <div class="card">
-                        <ul>
-                            <li class="income"> Transaction 1: $50.00</li>
-                            <li class="expense">Transaction 2: $100.00</li>
-                            <li class="income">Transaction 3: $75.00</li>
-                        </ul>
+                    <div class="goal-card">
+                        <h2>Goal 2</h2>
+                        <p>Amount: $500</p>
+                        <div class="progress-bar">
+                            <div class="progress-bar-inner" style="width: 70%;"></div>
+                        </div>
+                        <button class="edit-button">Edit</button>
                     </div>
-                    <h2>Budgets</h2>
-                    <div class="card">
-                        <h3>Monthly Budget</h3>
-                        <ul>
-                            <li>
-                                <p>$500.00</p>
-                            </li>
-                        </ul>
+                    <div class="goal-card">
+                        <h2>Goal 3</h2>
+                        <p>Amount: $1500</p>
+                        <div class="progress-bar">
+                            <div class="progress-bar-inner" style="width: 20%;"></div>
+                            <button class="edit-button">Edit</button>
+                        </div>
                     </div>
-                    <h2>Investments</h2>
-                    <div class="card">
-                        <h3>Stock Portfolio</h3>
-                        <ul>
-                            <li>
-                                <p>Total value: $10,000.00</p>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="sidebar">
-                    <h2 style="color: black;">Quick Links</h2>
-                    <a href="accounts">
-                        <div class="slidecard">
-                            <h3>Accounts</h3>
-                        </div>
-                    </a>
-                    <a href="budgets">
-                        <div class="slidecard">
-                            <h3>Budgets</h3>
-                        </div>
-                    </a>
-                    <a href="goals">
-                        <div class="slidecard">
-                            <h3>Goals</h3>
-                        </div>
-                    </a>
-                    <a href="investments">
-                        <div class="slidecard">
-                            <h3>Investments</h3>
-                        </div>
-                    </a>
                 </div>
             </div>
         </div>
-    </div>
 </body>
 
 </html>
