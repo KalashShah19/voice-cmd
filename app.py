@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, jsonify
-from flask_mysqldb import MySQL
+from flask_mysql import MySQL
 
 app = Flask(__name__)
 app = Flask(__name__, static_folder='templates/static')
@@ -54,6 +54,22 @@ def ai():
 def dashboard():
     return render_template('dashboard.html')
     
+@app.route('/budgets')
+def budgets():
+    return render_template('budgets.html')
+
+@app.route('/goals')
+def goals():
+    return render_template('goals.html')
+
+@app.route('/investments')
+def investments():
+    return render_template('investments.html')
+
+@app.route('/transactions')
+def transactions():
+    return render_template('transactions.html')
+
 @app.route('/create', methods=['POST'])
 def create():
     name = request.json.get('name')
