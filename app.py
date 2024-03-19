@@ -1,23 +1,26 @@
-from flask import Flask, render_template, request, redirect, jsonify
+from flask import Flask, render_template, request, redirect, jsonify, session
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 app = Flask(__name__, static_folder='templates/static')
 
+app.config['SECRET_KEY'] = 'kalash' 
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'voice_finance'
 app.config['MYSQL_HOST'] = 'localhost'
 
+class User:
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+
 mysql = MySQL(app)
 
 @app.route('/')
 def index():
-    # cur = mysql.connection.cursor()
-    # cur.execute("select * from users")
-    # data = cur.fetchall()
-    # cur.close()
-    # return render_template('voice.html', data = data)
     return render_template('voice.html')
 
 @app.route('/home')
@@ -28,8 +31,25 @@ def home():
 def features():
     return render_template('features.html')
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM users WHERE email = %s and password = %s", (email, password))
+        result = cur.fetchone()
+        cur.close()
+
+        if result:
+            session['id'] = result[0]
+            session['username'] = result[1]
+            session['email'] = result[2]
+            session['mobile'] = result[4]
+            return redirect('/dashboard') 
+        else:
+            return "Credentials Incorrect"
     return render_template('login.html')
 
 @app.route('/register')
@@ -52,7 +72,8 @@ def ai():
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    name = str(session.get('username'))
+    return render_template('dashboard.html', name = name)
 
 @app.route('/budgets')
 def budgets():
