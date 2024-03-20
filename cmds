@@ -1,4 +1,5 @@
 pip install Flask FlaskMySQLdb
+pip install --upgrade pip
 
 lsof -i tcp:5000
 kill -9 <PID>

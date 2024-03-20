@@ -16,7 +16,6 @@ class User:
         self.username = username
         self.password = password
 
-
 mysql = MySQL(app)
 
 @app.route('/')

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Details</title>
+    <link rel="stylesheet" href="static/css/investment.css"> 
+</head>
+<body>
+
+<div class="invContainer">
+    <header>
+        <h1>Investment Details</h1>
+    </header>
+
+    <div class="investment-details">
+        <h2>{{ investment.name }}</h2>
+        <p>Description: {{ investment.description }}</p>
+        <p>Amount: ${{ investment.amount }}</p>
+        <p>Date: {{ investment.date }}</p>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Accounts</title>
+    <link rel="stylesheet" href="static/css/accounts.css"> 
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>List of Accounts</h1>
+    </header>
+
+    <div class="account-list">
+        <ul>
+            {% for account in accounts %}
+            <li>{{ account.name }} - {{ account.balance }}</li> 
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

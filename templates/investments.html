@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Investments</title>
+    <link rel="stylesheet" href="static/css/investments.css"> 
+</head>
+<body>
+
+<div class="invContainer">
+    <header>
+        <h1>List of Investments</h1>
+    </header>
+
+    <div class="investment-list">
+        <ul>
+            {% for investment in investments %}
+            <li>{{ investment.name }} - {{ investment.amount }}</li> 
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
