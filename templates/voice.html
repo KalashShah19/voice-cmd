@@ -1,5 +1,3 @@
-<!-- templates/index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,10 +13,9 @@
     <button id="startButton">Start Recognition</button>
     <button id="stopButton">Stop Recognition</button>
     <h3>Text : <div id="result"></div></h3>
-    {{data}}
     </center>
     <script>
-       var recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+       var recognition = new webkitSpeechRecognition()
         recognition.continuous = true;
         recognition.lang = 'en-US';
         var BTNstart = document.getElementById('startButton')

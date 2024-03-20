@@ -78,17 +78,33 @@ def dashboard():
 def budgets():
     return render_template('budgets.html')
 
+@app.route('/budget')
+def budget():
+    return render_template('budget.html')
+
 @app.route('/goals')
 def goals():
     return render_template('goals.html')
+
+@app.route('/goal')
+def goals():
+    return render_template('goal.html')
 
 @app.route('/investments')
 def investments():
     return render_template('investments.html')
 
+@app.route('/investment')
+def investment():
+    return render_template('investment.html')
+
 @app.route('/transactions')
 def transactions():
     return render_template('transactions.html')
+
+@app.route('/transaction')
+def transaction():
+    return render_template('transaction.html')
 
 @app.route('/create', methods=['POST'])
 def create():
