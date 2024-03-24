@@ -37,7 +37,7 @@
       TXTresult.innerHTML = result;
       btn.className = "fade-out";
       btn.src = "{{ url_for('static', filename='images/aiBtn.png') }}";
-      wordRecognition();
+      interpret();
     };
 
     BTNstart.addEventListener('click', function () {
@@ -60,19 +60,36 @@
       }
     });
 
-    function getName(sentence) {
-      const words = sentence.split(' ');
+    function respond(msg) {
+      const speechText = new SpeechSynthesisUtterance(msg);
+      window.speechSynthesis.speak(speechText);
+      TXTresponse.innerHTML = msg;
+    }
+
+    function getName(text) {
+      const words = text.split(' ');
       const nameIndex = words.findIndex(word => word.toLowerCase() === 'name');
       if (nameIndex !== -1 && nameIndex < words.length - 1) {
         return words[nameIndex + 1];
       } else {
-        return null;
+        return "";
       }
     }
 
+    function getAmount(text) {
+      const regex = /\d+(\.\d+)?/;
 
-    function getBudget(sentence) {
-      const words = sentence.split(' ');
+      const match = text.match(regex);
+
+      if (match) {
+        return parseFloat(match[0]);
+      } else {
+        return 0;
+      }
+    }
+
+    function getBudgetName(text) {
+      const words = text.split(' ');
 
       const budgetIndex = words.findIndex(word => word.toLowerCase() === 'budget');
 
@@ -83,13 +100,181 @@
           return words[budgetIndex - 1];
         }
       }
-      return null;
+      return "";
     }
 
-    function wordRecognition() {
-      // console.log(result);
-      // console.log("word recognition");
-      var words = ["home", "features", "login", "register", "dashboard"];
+    function createBudget(result) {
+      console.log("in create");
+      var name = getName(result);
+      if (name == "") {
+        name = getBudgetName(result);
+      }
+
+      let amount = getAmount(result);
+      console.log("name = " + name + " amount = " + amount);
+
+      if (amount != 0) {
+        const data = { name: name, amount: amount };
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        };
+
+        fetch('createBudget', options)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Failed to create new budget');
+            } else {
+              alert("Budget created Successfully.");
+              window.location.href = 'budgets';
+              return response.json();
+            }
+          })
+          .then(data => {
+            console.log('Created budget successfully:', data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+
+        var msg = "Creating Budget named " + name + " with Amount " + amount + " ...";
+        respond(msg);
+        found = true;
+      }
+
+      else {
+        const data = { name: name };
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        };
+
+        fetch('create', options)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Failed to create budget.');
+            } else {
+              alert("Budget created Successfully.");
+              window.location.href = 'budgets';
+              return response.json();
+            }
+          })
+          .then(data => {
+            console.log('Created budget successfully:', data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+
+        var msg = "Creating Budget named " + name + " with Amount " + amount + " ...";
+        respond(msg);
+        found = true;
+      }
+    }
+
+    function addAmount() {
+      var name = getName(result);
+      if (name == "") {
+        name = getBudgetName(result);
+      }
+      if (name == "") {
+        respond("Can't find the name of Budget. Could you clarify your command?");
+      }
+      else {
+        let amount = getAmount(result);
+        if (amount != 0) {
+
+          const data = { name: name, amount: amount };
+          const options = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          };
+
+          fetch('addAmount', options)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Failed to add amount to the budget');
+              } else {
+                alert("Amount added to Budget Successfully.");
+                window.location.href = 'budgets';
+                return response.json();
+              }
+            })
+            .then(data => {
+              console.log("Amount added to Budget Successfully.", data);
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+
+          var msg = "Adding " + amount + " rs to the budget named " + name + "...";
+          respond(msg);
+        }
+        else {
+          respond("I Can't find the amount. Could you clarify your command?");
+        }
+      }
+    }
+
+    function deductAmount() {
+      var name = getName(result);
+      if (name == "") {
+        name = getBudgetName(result);
+      }
+      if (name == "") {
+        respond("Can't find the name of Budget. Could you clarify your command?");
+      }
+      else {
+        let amount = getAmount(result);
+        if (amount != 0) {
+
+          const data = { name: name, amount: amount };
+          const options = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          };
+
+          fetch('deductAmount', options)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Failed to add amount to the budget');
+              } else {
+                alert("Amount deducted from Budget Successfully.");
+                window.location.href = 'budgets';
+                return response.json();
+              }
+            })
+            .then(data => {
+              console.log("Amount deduected from Budget Successfully.", data);
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+
+          var msg = "Deducted " + amount + " rs from the budget named " + name + "...";
+          respond(msg);
+        }
+        else {
+          respond("I Can't find the amount. Could you clarify your command?");
+        }
+      }
+    }
+
+
+    function interpret() {
+      var words = ["home", "features", "login", "register", "dashboard", "budgets", "goals", "investments"];
       var found = false;
 
       for (word in words) {
@@ -105,7 +290,7 @@
             found = true;
           }
 
-          else if (result.includes("back")) {
+          else if (result.includes("back")) { // 6
             const speechText = new SpeechSynthesisUtterance("Okay, taking you to " + page + " page.");
             window.speechSynthesis.speak(speechText);
             TXTresponse.innerHTML = "Okay, taking you to Previous page.";
@@ -115,7 +300,7 @@
             found = true;
           }
 
-          else if (result.includes("previous")) {
+          else if (result.includes("previous")) { // 7
             const speechText = new SpeechSynthesisUtterance("Okay, taking you to Previous page.");
             window.speechSynthesis.speak(speechText);
             TXTresponse.innerHTML = "Okay, taking you to Previous page.";
@@ -125,113 +310,185 @@
             found = true;
           }
 
-          else if (result.includes("hi")) {
-            const speechText = new SpeechSynthesisUtterance("Hello! How can I assist you today?");
-            window.speechSynthesis.speak(speechText);
-            TXTresponse.innerHTML = "Hello! How can I assist you today?";
+          else if (result.includes("hi")) { // 8
+            respond("Hello! How can I assist you today?");
             found = true;
           }
 
-          else if (result.includes("hello")) {
-            const speechText = new SpeechSynthesisUtterance("Hi! How can I assist you today?");
-            window.speechSynthesis.speak(speechText);
-            TXTresponse.innerHTML = "Hi! How can I assist you today?";
+          else if (result.includes("hello")) { // 9            
+            respond("Hi! How can I assist you today?");
             found = true;
           }
 
-          else if (result.includes("what is your name")) {
-            const speechText = new SpeechSynthesisUtterance("I am Voice Finance Assistant");
-            window.speechSynthesis.speak(speechText);
-            TXTresponse.innerHTML = "I am Voice Finance Assistant";
+          else if (result.includes("hey")) { // 9            
+            respond("Hi! How can I assist you today?");
             found = true;
           }
 
-          else if (result.includes("budget name")) {
-            const name = getName(result);
-            // console.log("Name =" + name);
-
-            const data = { name: name };
-            const options = {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(data)
-            };
-
-            fetch('create', options)
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error('Failed to create data');
-                }
-                else {
-                  alert("Budget Created Successfully.");
-                  window.location.href = 'budget';
-                  return response.json();
-                }
-              })
-              .then(data => {
-                console.log('Budget created successfully:', data);
-              })
-              .catch(error => {
-                console.error('Error:', error);
-              });
-
-            const speechText = new SpeechSynthesisUtterance("Creating New Budget named " + name + "...");
-            window.speechSynthesis.speak(speechText);
-            TXTresponse.innerHTML = "Creating New Budget named " + name + "...";
+          else if (result.includes("good morning")) { // 9            
+            respond("Good Morning! How can I assist you today?");
             found = true;
           }
 
-          else if (result.includes("budget")) {
-            const budget = getBudget(result);
-            // console.log("Name =" + budget);
-            const data = { name: budget };
-            const options = {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(data)
-            };
-
-            fetch('create', options)
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error('Failed to create data');
-                }
-                else {
-                  alert("Budget Created Successfully.");
-                  window.location.href = 'budget';
-                  return response.json();
-                }
-              })
-              .then(data => {
-                console.log('Budget created successfully:', data);
-              })
-              .catch(error => {
-                console.error('Error:', error);
-              });
-
-            const speechText = new SpeechSynthesisUtterance("Creating New Budget named " + budget + "...");
-            window.speechSynthesis.speak(speechText);
-            TXTresponse.innerHTML = "Creating New Budget named " + budget + "...";
+          else if (result.includes("good afternoon")) { // 9            
+            respond("Good Afternnon! How can I assist you today?");
             found = true;
           }
 
-          else if (result.includes("who are you")) {
-            const speechText = new SpeechSynthesisUtterance("I am Voice Finance Assistant");
-            window.speechSynthesis.speak(speechText);
-            TXTresponse.innerHTML = "I am Voice Finance Assistant";
+
+          else if (result.includes("good night")) { // 9            
+            respond("Good Night! Have a good sleep.");
+            found = true;
+          }
+
+          else if (result.includes("good evening")) { // 9            
+            respond("Good Evening! How can I assist you today?");
+            found = true;
+          }
+
+          else if (result.includes("what is your name")) { // 10
+            respond("I am Voice Finance Assistant");
+            found = true;
+          }
+
+          else if (result.includes("who are you")) { // 12
+            respond("I am Voice Finance Assistant");
+            found = true;
+          }
+
+          else if (result.includes("create budget name")) {
+            found = true;
+            createBudget(result);
+          }
+
+          else if (result.includes("create budget")) { // 11
+            found = true;
+            createBudget(result);
+          }
+
+          else if (result.includes("make budget")) { // 11
+            found = true;
+            createBudget(result);
+          }
+
+
+          else if (result.includes("new budget")) { // 11
+            found = true;
+            createBudget(result);
+          }
+
+          else if (result.includes("create a budget name")) {
+            found = true;
+            createBudget(result);
+          }
+
+          else if (result.includes("create a budget")) { // 11
+            found = true;
+            createBudget(result);
+          }
+
+          else if (result.includes("make a budget")) { // 11
+            found = true;
+            createBudget(result);
+          }
+
+          else if (result.includes("new budget")) { // 11
+            found = true;
+            createBudget(result);
+          }
+
+
+          else if (result.includes("add amount")) { // 11
+            found = true;
+            addAmount(result);
+          }
+
+
+          else if (result.includes("add")) { // 11
+            found = true;
+            addAmount(result);
+          }
+
+          else if (result.includes("deduct")) { // 11
+            found = true;
+            deductAmount(result);
+          }
+
+          else if (result.includes("minus")) { // 11
+            found = true;
+            deductAmount(result);
+          }
+          
+          else if (result.includes("make payment")) { // 13
+            respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
+            found = true;
+          }
+
+          else if (result.includes("make a payment")) { // 13
+            respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
+            found = true;
+          }
+
+          else if (result.includes("make payments")) { // 14
+            respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
+            found = true;
+          }
+
+          else if (result.includes("make my payments")) { // 15
+            respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
+            found = true;
+          }
+
+          else if (result.includes("do payments")) { // 16
+            respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
+            found = true;
+          }
+
+          else if (result.includes("do my payments")) { // 17
+            respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
+            found = true;
+          }
+
+          else if (result.includes("do a payment")) { // 18
+            respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
+            found = true;
+          }
+
+          else if (result.includes("do my payment")) { // 18
+            respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
+            found = true;
+          }
+
+          else if (result.includes("pay")) { // 19
+            respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
+            found = true;
+          }
+
+          else if (result.includes("send")) { // 20
+            respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
+            found = true;
+          }
+
+          else if (result.includes("transfer")) { // 21
+            respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
+            found = true;
+          }
+
+
+          else if (result.includes("withdraw")) { // 21
+            respond("As an Finance AI Model and due to Security Policies, I am not able to withdraw money from your bank account. Hope You'd Understand");
+            found = true;
+          }
+
+          else if (result.includes("take money")) { // 21
+            respond("As an Finance AI Model and due to Security Policies, I am not able to take money from your bank account. Hope You'd Understand");
             found = true;
           }
         }
       }
 
-      if (!found) {
-        const speechText = new SpeechSynthesisUtterance("Sorry, I didn't Understand.");
-        window.speechSynthesis.speak(speechText);
-        TXTresponse.innerHTML = "Sorry, I didn't Understand.";
+      if (found == false) {
+        respond("Sorry, I didn't Undertsand.");
       }
     }
   </script>

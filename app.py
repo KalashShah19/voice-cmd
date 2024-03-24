@@ -76,7 +76,12 @@ def dashboard():
 
 @app.route('/budgets')
 def budgets():
-    return render_template('budgets.html')
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM budgets order by bid desc")
+    budgets = cursor.fetchall()
+    cursor.close()
+    print(budgets)
+    return render_template('budgets.html', budgets = budgets)
 
 @app.route('/budget')
 def budget():
@@ -87,7 +92,7 @@ def goals():
     return render_template('goals.html')
 
 @app.route('/goal')
-def goals():
+def goal():
     return render_template('goal.html')
 
 @app.route('/investments')
@@ -110,10 +115,83 @@ def transaction():
 def create():
     name = request.json.get('name')
     cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO budget (name) VALUES (%s)",(name,))
+    cursor.execute("INSERT INTO budgets (name) VALUES (%s)",(name,))
     mysql.connection.commit()
     cursor.close()
     return jsonify({"message": "Creating..."}), 200
+
+@app.route('/createBudget', methods=['POST'])
+def createBudget():
+    data = request.json
+    name = data.get('name')
+    amount = data.get('amount')
+
+    if name is None or amount is None:
+        return jsonify({'error': 'Name and amount are required parameters'}), 400
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO budgets (name, amount, remaining) VALUES (%s, %s, %s)", (name, amount, amount))
+    mysql.connection.commit()
+    cursor.close()
+    return jsonify({"message": f"Creating budget '{name}' with amount {amount}"}), 200
+
+@app.route('/addAmount', methods=['POST'])
+def addAmount():
+    data = request.json
+    name = data.get('name')
+    amount = data.get('amount')
+
+    if name is None or amount is None:
+        return jsonify({'error': 'Name and amount are required parameters'}), 400
+
+    try:
+        amount = float(amount)
+    except ValueError:
+        return jsonify({'error': 'Amount must be a number'}), 400
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM budgets WHERE name = %s", (name,))
+    budget = cursor.fetchone()
+
+    if budget is None:
+        return jsonify({'error': 'Budget does not exist'}), 404
+
+    new_amount = float(budget[2]) + amount 
+
+    cursor.execute("UPDATE budgets SET amount = %s WHERE name = %s", (new_amount, name))
+    mysql.connection.commit()
+    cursor.close()
+
+    return jsonify({"message": f"Amount updated for budget '{name}' to {new_amount}"}), 200
+
+@app.route('/deductAmount', methods=['POST'])
+def deductAmount():
+    data = request.json
+    name = data.get('name')
+    amount = data.get('amount')
+
+    if name is None or amount is None:
+        return jsonify({'error': 'Name and amount are required parameters'}), 400
+
+    try:
+        amount = float(amount)
+    except ValueError:
+        return jsonify({'error': 'Amount must be a number'}), 400
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM budgets WHERE name = %s", (name,))
+    budget = cursor.fetchone()
+
+    if budget is None:
+        return jsonify({'error': 'Budget does not exist'}), 404
+
+    new_amount = float(budget[2]) - amount 
+
+    cursor.execute("UPDATE budgets SET amount = %s WHERE name = %s", (new_amount, name))
+    mysql.connection.commit()
+    cursor.close()
+
+    return jsonify({"message": f"Amount updated for budget '{name}' to {new_amount}"}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

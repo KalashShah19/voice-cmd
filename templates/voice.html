@@ -30,6 +30,7 @@
             result = event.results[0][0].transcript;
             result = result.toLowerCase();
             document.getElementById('result').innerHTML = result;
+            navigator.clipboard.writeText(result)
             wordRecognition();
         };
 

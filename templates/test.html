@@ -4,83 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goals</title>
+    <title> Budgets </title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #161616;
-        }
-
-        .container {
-            width: 80%;
-            margin: 20px auto;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            grid-gap: 20px;
-        }
-
-        .goal-card {
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            position: relative;
-            /* To position the edit button */
-        }
-
-        .goal-card h2 {
-            margin-top: 0;
-        }
-
-        .goal-card p {
-            margin-bottom: 10px;
-        }
-
-        .progress-bar {
-            background-color: #f0f0f0;
-            border-radius: 5px;
-            height: 20px;
-            overflow: hidden;
-        }
-
-        .progress-bar-inner {
-            background-color: rgb(11, 208, 11);;
-            height: 100%;
-        }
-
-        .edit-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .add-goal-button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
+       
     </style>
 </head>
 
 <body>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="static/css/goal.css">
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
     <div>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
+        <link rel="stylesheet" type="text/css" href="static/css/index.css">
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"> -->
+        <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}"> -->
 
         <div class="home-container">
             <div class="home-header">
@@ -92,11 +28,11 @@
                             <span class="home-nav22 bodySmall"> <a href="budgets"> Budgets</span> </a>
                             <span class="home-nav32 bodySmall"> <a href="goals"> Goals </span> </a>
                             <span class="home-nav42 bodySmall"> <a href="investments"> Investments </a></span>
-                            <span class="home-nav42 bodySmall"> <a href="investments"> Investments </a></span>
+                            <span class="home-nav42 bodySmall"> <a href="transactions"> Transactions </a></span>
                         </nav>
                         <div class="home-buttons">
-                            <a href="login"> <button class="home-login buttonFilled">Login</button> </a>
-                            <a href="register"> <button class="home-register buttonFilled">Register</button> </a>
+                            <a href="profile"> <button class="home-login buttonFilled">Profile</button> </a>
+                            <a href="Logout"> <button class="home-register buttonFilled">Logout</button> </a>
                         </div>
                     </div>
                     <div data-thq="thq-burger-menu" class="home-burger-menu">
@@ -119,14 +55,15 @@
                                 </div>
                             </div>
                             <nav class="home-links1">
-                                <span class="home-nav121 bodySmall">Home</span>
-                                <span class="home-nav221 bodySmall">Features</span>
-                                <span class="home-nav321 bodySmall">Plans</span>
-                                <span class="home-nav421 bodySmall">Contact</span>
+                                <span class="home-nav121 bodySmall"> <a href="home">Home</a></span>
+                                <span class="home-nav221 bodySmall"> <a href="Budgets">Budgets</a></span>
+                                <span class="home-nav321 bodySmall"> <a href="goals">Goals</a></span>
+                                <span class="home-nav421 bodySmall"> <a href="investments"></a>Investments</span>
+                                <span class="home-nav421 bodySmall"> <a href="transactions"></a>Transactions</span>
                             </nav>
                             <div class="home-buttons1">
-                                <button class="buttonFilled">Login</button>
-                                <button class="buttonFilled">Register</button>
+                                <a href="profile"><button class="buttonFilled">Profile</button></a>
+                                <a href="logout"><button class="buttonFilled">Logout</button></a>
                             </div>
                         </div>
                         <div>
@@ -146,35 +83,24 @@
                         </div>
                     </div>
                 </header>
-    <div class="container">
-        <div class="grid">
-            <div class="goal-card">
-                <h2>Goal 1</h2>
-                <p>Amount: $1000</p>
-                <div class="progress-bar">
-                    <div class="progress-bar-inner" style="width: 40%;"></div>
-                </div>
-                <button class="edit-button">Edit</button>
             </div>
-            <div class="goal-card">
-                <h2>Goal 2</h2>
-                <p>Amount: $500</p>
-                <div class="progress-bar">
-                    <div class="progress-bar-inner" style="width: 70%;"></div>
-                </div>
-                <button class="edit-button">Edit</button>
-            </div>
-            <div class="goal-card">
-                <h2>Goal 3</h2>
-                <p>Amount: $1500</p>
-                <div class="progress-bar">
-                    <div class="progress-bar-inner" style="width: 20%;"></div>
-                    <button class="edit-button">Edit</button>
+            <br> <br> <br> <br>
+            <h1 style="color: cyan;text-align: center;"> Budgets </h1>
+            <button class="add-goal-button"> Create new Budget </button>
+            <div class="container">
+                <div class="grid">
+                    {% for budget in budgets %}
+                    <div class="goal-card">
+                        <h2> {{ budget[1] }} </h2>
+                        <p> Total: {{ budget[2] }} </p>
+                        <p> Remaining: {{ budget[3] }} </p>
+                        <button class="edit-button">Edit</button>
+                        <button class="delete-button">Delete</button>
+                    </div>
+
                 </div>
             </div>
         </div>
-        <button class="add-goal-button">Add New Goal</button>
-    </div>
 </body>
 
 </html>
