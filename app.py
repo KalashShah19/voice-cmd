@@ -83,9 +83,28 @@ def budgets():
     print(budgets)
     return render_template('budgets.html', budgets = budgets)
 
+@app.route('/open', methods=['POST'])
+def open():
+    name = request.json.get('name')
+    # print("opening = " + name)
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM budgets WHERE name = %s", (name,))
+    budget = cursor.fetchone()
+    cursor.close()
+
+    if budget is None:
+        return jsonify({'message': 'Budget not Found'}), 404
+    else:
+        return jsonify({'message': 'Opening Budget'}), 200
+ 
 @app.route('/budget')
 def budget():
-    return render_template('budget.html')
+    name = request.args.get('name')
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM budgets WHERE name = %s", (name,))
+    budget = cursor.fetchone()
+    cursor.close()
+    return render_template('budget.html', budget = budget)
 
 @app.route('/goals')
 def goals():

@@ -178,6 +178,47 @@
       }
     }
 
+    function openBudget(result) {
+      var name = getName(result);
+      if (name == "") {
+        name = getBudgetName(result);
+      }
+      if (name == "") {
+        respond("Can't find the name of Budget. Could you clarify your command?");
+      }
+      else {
+        const data = { name: name };
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        };
+
+        fetch('open', options)
+          .then(response => {
+            if (response.ok) {
+              var msg = "Opening " + name + " Budget.";
+              respond(msg);
+              window.location.href = 'budget?name=' + name;
+            } else if (response.status === 404) {
+              respond("Couldn't find Budget, Could you clarify your command with budget name clearly?");
+            }
+            else {
+              respond("Failed to open Budget")
+            }
+          })
+          .then(data => {
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+
+        found = true;
+      }
+    }
+
     function addAmount() {
       var name = getName(result);
       if (name == "") {
@@ -201,12 +242,14 @@
 
           fetch('addAmount', options)
             .then(response => {
-              if (!response.ok) {
-                throw new Error('Failed to add amount to the budget');
-              } else {
+              if (response.ok) {
                 alert("Amount added to Budget Successfully.");
                 window.location.href = 'budgets';
-                return response.json();
+              } else if (response.status === 404) {
+                respond("Couldn't find Budget, Could you clarify your command with budget name clearly?");
+              }
+              else {
+                respond("Failed to add amount.")
               }
             })
             .then(data => {
@@ -248,12 +291,15 @@
 
           fetch('deductAmount', options)
             .then(response => {
-              if (!response.ok) {
-                throw new Error('Failed to add amount to the budget');
-              } else {
+              if (response.ok) {
                 alert("Amount deducted from Budget Successfully.");
                 window.location.href = 'budgets';
                 return response.json();
+              } else if (response.status === 404) {
+                respond("Couldn't find Budget, Could you clarify your command with budget name clearly?");
+              }
+              else {
+                respond("Failed to deduct amount.")
               }
             })
             .then(data => {
@@ -272,14 +318,13 @@
       }
     }
 
-
     function interpret() {
-      var words = ["home", "features", "login", "register", "dashboard", "budgets", "goals", "investments"];
+      var words = ["home", "features", "about us", "contact us", "reviews", "login", "register", "dashboard", "budgets", "goals", "investments"];
       var found = false;
 
       for (word in words) {
         if (!found) {
-          if (result.includes(words[word])) {
+          if (result.includes(words[word])) { // 12
             var page = words[word];
             const speechText = new SpeechSynthesisUtterance("Okay, taking you to " + page + " page.");
             TXTresponse.innerHTML = "Okay, taking you to " + page + " page.";
@@ -290,7 +335,7 @@
             found = true;
           }
 
-          else if (result.includes("back")) { // 6
+          else if (result.includes("back")) { // 13
             const speechText = new SpeechSynthesisUtterance("Okay, taking you to " + page + " page.");
             window.speechSynthesis.speak(speechText);
             TXTresponse.innerHTML = "Okay, taking you to Previous page.";
@@ -300,7 +345,7 @@
             found = true;
           }
 
-          else if (result.includes("previous")) { // 7
+          else if (result.includes("previous")) { // 14
             const speechText = new SpeechSynthesisUtterance("Okay, taking you to Previous page.");
             window.speechSynthesis.speak(speechText);
             TXTresponse.innerHTML = "Okay, taking you to Previous page.";
@@ -310,185 +355,193 @@
             found = true;
           }
 
-          else if (result.includes("hi")) { // 8
+          else if (result.includes("hi")) { // 15
             respond("Hello! How can I assist you today?");
             found = true;
           }
 
-          else if (result.includes("hello")) { // 9            
+          else if (result.includes("hello")) { // 16       
             respond("Hi! How can I assist you today?");
             found = true;
           }
 
-          else if (result.includes("hey")) { // 9            
+          else if (result.includes("hey")) { // 17         
             respond("Hi! How can I assist you today?");
             found = true;
           }
 
-          else if (result.includes("good morning")) { // 9            
+          else if (result.includes("good morning")) { // 18
             respond("Good Morning! How can I assist you today?");
             found = true;
           }
 
-          else if (result.includes("good afternoon")) { // 9            
+          else if (result.includes("good afternoon")) { // 19            
             respond("Good Afternnon! How can I assist you today?");
             found = true;
           }
 
 
-          else if (result.includes("good night")) { // 9            
+          else if (result.includes("good night")) { // 20        
             respond("Good Night! Have a good sleep.");
             found = true;
           }
 
-          else if (result.includes("good evening")) { // 9            
+          else if (result.includes("good evening")) { // 21            
             respond("Good Evening! How can I assist you today?");
             found = true;
           }
 
-          else if (result.includes("what is your name")) { // 10
+          else if (result.includes("what is your name")) { // 22
             respond("I am Voice Finance Assistant");
             found = true;
           }
 
-          else if (result.includes("who are you")) { // 12
+          else if (result.includes("who are you")) { // 23
             respond("I am Voice Finance Assistant");
             found = true;
           }
 
-          else if (result.includes("create budget name")) {
+          else if (result.includes("create budget name")) { // 24
             found = true;
             createBudget(result);
           }
 
-          else if (result.includes("create budget")) { // 11
+          else if (result.includes("create budget")) { // 25
             found = true;
             createBudget(result);
           }
 
-          else if (result.includes("make budget")) { // 11
+          else if (result.includes("make budget")) { // 26
             found = true;
             createBudget(result);
           }
 
-
-          else if (result.includes("new budget")) { // 11
+          else if (result.includes("new budget")) { // 27
             found = true;
             createBudget(result);
           }
 
-          else if (result.includes("create a budget name")) {
+          else if (result.includes("create a budget name")) { // 28
             found = true;
             createBudget(result);
           }
 
-          else if (result.includes("create a budget")) { // 11
+          else if (result.includes("create a budget")) { // 29
             found = true;
             createBudget(result);
           }
 
-          else if (result.includes("make a budget")) { // 11
+          else if (result.includes("make a budget")) { // 30
             found = true;
             createBudget(result);
           }
 
-          else if (result.includes("new budget")) { // 11
+          else if (result.includes("new budget")) { // 31
             found = true;
             createBudget(result);
           }
 
+          else if (result.includes("show")) { // 32
+            openBudget(result);
+            found = true;
+          }
 
-          else if (result.includes("add amount")) { // 11
+          else if (result.includes("open")) { // 33
+            openBudget(result);
+            found = true;
+          }
+
+          else if (result.includes("add amount")) { // 34
             found = true;
             addAmount(result);
           }
 
-
-          else if (result.includes("add")) { // 11
+          else if (result.includes("add")) { // 35
             found = true;
             addAmount(result);
           }
 
-          else if (result.includes("deduct")) { // 11
+          else if (result.includes("deduct")) { // 36
             found = true;
             deductAmount(result);
           }
 
-          else if (result.includes("minus")) { // 11
+          else if (result.includes("minus")) { // 37
             found = true;
             deductAmount(result);
           }
-          
-          else if (result.includes("make payment")) { // 13
+
+          else if (result.includes("make payment")) { // 38
             respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
             found = true;
           }
 
-          else if (result.includes("make a payment")) { // 13
+          else if (result.includes("make a payment")) { // 39
             respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
             found = true;
           }
 
-          else if (result.includes("make payments")) { // 14
+          else if (result.includes("make payments")) { // 40
             respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
             found = true;
           }
 
-          else if (result.includes("make my payments")) { // 15
+          else if (result.includes("make my payments")) { // 41
             respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
             found = true;
           }
 
-          else if (result.includes("do payments")) { // 16
+          else if (result.includes("do payments")) { // 42
             respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
             found = true;
           }
 
-          else if (result.includes("do my payments")) { // 17
+          else if (result.includes("do my payments")) { // 43
             respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
             found = true;
           }
 
-          else if (result.includes("do a payment")) { // 18
+          else if (result.includes("do a payment")) { // 44
             respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
             found = true;
           }
 
-          else if (result.includes("do my payment")) { // 18
+          else if (result.includes("do my payment")) { // 45
             respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
             found = true;
           }
 
-          else if (result.includes("pay")) { // 19
+          else if (result.includes("pay")) { // 46
             respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
             found = true;
           }
 
-          else if (result.includes("send")) { // 20
+          else if (result.includes("send")) { // 47
             respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
             found = true;
           }
 
-          else if (result.includes("transfer")) { // 21
+          else if (result.includes("transfer")) { // 48
             respond("As an Finance AI Model and due to Security Policies, I am not able to make your payments. Hope You'd Understand");
             found = true;
           }
 
 
-          else if (result.includes("withdraw")) { // 21
+          else if (result.includes("withdraw")) { // 49
             respond("As an Finance AI Model and due to Security Policies, I am not able to withdraw money from your bank account. Hope You'd Understand");
             found = true;
           }
 
-          else if (result.includes("take money")) { // 21
+          else if (result.includes("take money")) { // 50
             respond("As an Finance AI Model and due to Security Policies, I am not able to take money from your bank account. Hope You'd Understand");
             found = true;
           }
+
         }
       }
 
-      if (found == false) {
-        respond("Sorry, I didn't Undertsand.");
+      if (found == false) { // 51
+        respond("Sorry, I didn't Understand.");
       }
     }
   </script>
