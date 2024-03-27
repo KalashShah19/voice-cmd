@@ -86,7 +86,6 @@ def budgets():
 @app.route('/open', methods=['POST'])
 def open():
     name = request.json.get('name')
-    # print("opening = " + name)
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM budgets WHERE name = %s", (name,))
     budget = cursor.fetchone()
@@ -103,8 +102,18 @@ def budget():
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM budgets WHERE name = %s", (name,))
     budget = cursor.fetchone()
+    cursor.execute("SELECT * FROM records WHERE bid = %s and type = 'expense'", (budget[0],))
+    expenses = cursor.fetchall()
+    cursor.execute("SELECT * FROM records WHERE bid = %s and type = 'income'", (budget[0],))
+    incomes = cursor.fetchall()
+    cursor.execute("SELECT sum(amount) FROM records WHERE bid = %s and type = 'income'", (budget[0],))
+    inc = cursor.fetchone()
+    inc = int(inc[0])
+    cursor.execute("SELECT sum(amount) FROM records WHERE bid = %s and type = 'expense'", (budget[0],))
+    exp = cursor.fetchone()
+    exp = int(exp[0])
     cursor.close()
-    return render_template('budget.html', budget = budget)
+    return render_template('budget.html', budget = budget, expenses = expenses, incomes = incomes, exp = exp, inc = inc )
 
 @app.route('/goals')
 def goals():

@@ -50,6 +50,7 @@
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
+            text-transform: capitalize;
         }
     </style>
 </head>
@@ -126,26 +127,32 @@
                 </header>
             </div>
             <br> <br> <br> <br>
-    <h1 style="text-align: center;color:cyan"> Budgets </h1>
-    <h2 style="text-align: center;color:white"> {{ budget[1] }} </h2>
-    <h3 style="text-align: center;color:lightgrey"> {{ budget[2] }} / {{ budget[3] }} </h3>
-    <div class="container">
-        <div class="half">
-            <h2 style="color:red"> Expenses</h2>
-            <ul id="expenseList">
-                <li><span> Rent </span> <span> $1000 </span></li>
-                <li><span> Groceries </span> <span> $200 </span></li>
-                <li><span> Transportation </span> <span> $50 </span></li>
-            </ul>
-        </div>
-        <div class="half">
-            <h2 style="color:rgb(20, 210, 20)">Incomes</h2>
-            <ul id="incomeList">
-                <li><span> Salary</span> <span> $3000</span></li>
-                <li><span> Freelance Work</span> <span> $500</span></li>
-            </ul>
-        </div>
-    </div>
+            <h1 style="text-align: center;color:cyan"> Budget Details </h1>
+            <h2 style="text-align: center;color:white; text-transform: capitalize;"> {{ budget[1] }} </h2>
+            <h3 style="text-align: center;color:lightgrey"> Remaining - {{ budget[3] }} </h3>
+            <div class="container">
+                <div class="half">
+                    
+                    <h2 style="color:red"> Expenses - {{ exp | int }}
+                    </h2>
+                    <ul id="expenseList">
+                        <li style="font-weight: bold; font-style:italic; font-size: large;"> <span> Name </span> <span> Rs </span></li>
+                        {% for expense in expenses %}
+                        <li><span> {{ expense[3] }} </span> <span> {{ expense[4] }} </span></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="half">
+                    <h2 style="color:rgb(20, 210, 20)"> Incomes - {{ inc | int }}
+                    </h2>
+                    <ul id="incomeList">
+                        <li style="font-weight: bold; font-style:italic; font-size: large;"> <span> Name </span> <span> Rs </span></li>
+                        {% for income in incomes %}
+                        <li><span> {{ income[3] }} </span> <span> {{ income[4] }} </span></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
 </body>
 
 </html>
