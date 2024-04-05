@@ -17,7 +17,8 @@
             background-color: #161616;
         }
 
-        .container {
+        .recordContainer {
+            width: 30%;
             background-color: #fff;
             padding: 20px;
             border-radius: 10px;
@@ -138,9 +139,10 @@
                 </div>
             </header>
         </div>
-        <div class="container">
+        <br> <br> <br> <br> <br> <br> <br>
+        <div class="recordContainer">
             <h2>Record Details</h2>
-            <form id="recordForm">
+            <form id="form">
                 <div class="form-group">
                     <label for="name">Name:</label>
                     <input type="text" id="name" name="name" required>
@@ -157,10 +159,34 @@
                         <option value="expense">Expense</option>
                     </select>
                 </div>
-                <input type="submit" value="Save">
+                <input type="submit" value="Add">
             </form>
         </div>
     </div>
+    <script>
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        var name = url.searchParams.get("name");
+
+        document.getElementById("form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            formData.append('budget', name);
+            fetch("/newRecord", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("request sent");
+                    alert("Record Inserted!");
+                    window.location.href = 'budget?name=' + name;
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        });
+    </script>
 </body>
 
 </html>

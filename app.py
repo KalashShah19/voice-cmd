@@ -139,6 +139,25 @@ def transactions():
 def transaction():
     return render_template('transaction.html')
 
+@app.route('/record')
+def record():
+    return render_template('record.html')
+
+@app.route('/newRecord', methods=['POST'])
+def newRecord():
+    data = request.form
+    cursor = mysql.connection.cursor()
+    
+    cursor.execute("SELECT * FROM budgets WHERE name = %s", (data['budget'],))
+    budget = cursor.fetchone()
+    
+    cursor.execute("INSERT INTO records (bid,type,name,amount) VALUES (%s, %s, %s, %s)",(budget[0],data['type'],data['name'],data['amount']))
+    
+    mysql.connection.commit()
+    cursor.close()
+    
+    return jsonify({'message': 'Record added successfully'}), 200
+
 @app.route('/create', methods=['POST'])
 def create():
     name = request.json.get('name')

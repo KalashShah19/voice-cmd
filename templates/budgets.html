@@ -6,16 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Budgets </title>
     <style>
-       
     </style>
 </head>
 
 <body>
-    <!-- <link rel="stylesheet" type="text/css" href="static/css/goal.css">
-    <link rel="stylesheet" type="text/css" href="static/css/style.css">
-    <link rel="stylesheet" type="text/css" href="static/css/index.css"> -->
     <div>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/goal.css') }}">
 
@@ -95,13 +91,14 @@
                         <h2> {{ budget[1] }} </h2>
                         <p> Total: {{ budget[2] }} </p>
                         <p> Remaining: {{ budget[3] }} </p>
-                        <button class="edit-button">Edit</button>
-                        <button class="delete-button">Delete</button>
+                        <a href="budget?name={{ budget[1] }}" class="edit-button">Edit</a>
+                        <a href="budgetDelete?name={{ budget[1] }}" class="delete-button">Delete</a>
                     </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
+    </div>
 </body>
 
 </html>

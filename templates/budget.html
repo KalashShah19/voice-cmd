@@ -52,10 +52,23 @@
             padding: 10px 0;
             text-transform: capitalize;
         }
+
+        .addButton {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: large;
+        }
     </style>
 </head>
 
 <body>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <div>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
@@ -130,15 +143,21 @@
             <h1 style="text-align: center;color:cyan"> Budget Details </h1>
             <h2 style="text-align: center;color:white; text-transform: capitalize;"> {{ budget[1] }} </h2>
             <h3 style="text-align: center;color:lightgrey"> Remaining - {{ budget[3] }} </h3>
+            <a id="add" class="addButton"> Add New Record </a>
             <div class="container">
                 <div class="half">
-                    
                     <h2 style="color:red"> Expenses - {{ exp | int }}
                     </h2>
                     <ul id="expenseList">
-                        <li style="font-weight: bold; font-style:italic; font-size: large;"> <span> Name </span> <span> Rs </span></li>
+                        <li style="font-weight: bold; font-style:italic; font-size: large;"> <span> Name </span> <span>
+                                Rs </span></li>
                         {% for expense in expenses %}
-                        <li><span> {{ expense[3] }} </span> <span> {{ expense[4] }} </span></li>
+                        <li><span> {{ expense[3] }} </span> <span>
+                                {{ expense[4] }} <a href="edit?id={{ expense[0] }}" class="btn btn-warning btn-sm"><i
+                                        class="fas fa-edit"></i></a>
+                                <a href="delete?id={{ expense[0] }}" class="btn btn-danger btn-sm"><i
+                                        class="fas fa-trash-alt"></i></a></span>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -146,13 +165,28 @@
                     <h2 style="color:rgb(20, 210, 20)"> Incomes - {{ inc | int }}
                     </h2>
                     <ul id="incomeList">
-                        <li style="font-weight: bold; font-style:italic; font-size: large;"> <span> Name </span> <span> Rs </span></li>
+                        <li style="font-weight: bold; font-style:italic; font-size: large;"> <span> Name </span> <span>
+                                Rs </span></li>
                         {% for income in incomes %}
-                        <li><span> {{ income[3] }} </span> <span> {{ income[4] }} </span></li>
+                        <li> <span> {{ income[3] }} </span> <span>
+                                {{ income[4] }} <a href="edit?id={{ income[0] }}" class="btn btn-warning btn-sm"><i
+                                        class="fas fa-edit"></i></a>
+                                <a href="delete?id={{ income[0] }}" class="btn btn-danger btn-sm"><i
+                                        class="fas fa-trash-alt"></i></a></span>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
             </div>
+        </div>
+    </div>
 </body>
+<script>
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    var name = url.searchParams.get("name");
+    var link = document.getElementById('add')
+    link.href = 'record?name=' + name;
+</script>
 
 </html>
