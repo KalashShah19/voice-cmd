@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title> Profile </title>
+    <title> Change Password </title>
     <meta property="og:title" content="Login - Superb Imperturbable Llama" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
@@ -84,9 +84,9 @@
         }
 
         .change {
-            color:black;
+            color: black;
             text-decoration: none;
-            padding : 5px;
+            padding: 5px;
             margin: 5px;
             background-color: white;
             border-radius: 9px;
@@ -695,9 +695,10 @@
                 <div data-thq="thq-navbar-nav" class="login-desktop-menu">
                     <nav class="login-links">
                         <span class="login-nav12 bodySmall"><a href="home">Home</a></span>
-                        <span class="login-nav22 bodySmall"><a href="home">Features</a></span>
-                        <span class="login-nav32 bodySmall"><a href="reviews">Reviews</a></span>
-                        <span class="login-nav42 bodySmall"><a href="contact">Contact</a></span>
+                        <span class="home-nav22 bodySmall"> <a href="ai">AI</a></span>
+                        <span class="login-nav22 bodySmall"><a href="budgets">Budgets</a></span>
+                        <span class="login-nav32 bodySmall"><a href="Goals"> Goals </a></span>
+                        <span class="login-nav42 bodySmall"><a href="investments">Investments</a></span>
                     </nav>
                     <div class="login-buttons">
                         <a href="profile"><button class="login-login buttonFilled">Profile</button></a>
@@ -725,9 +726,9 @@
                         </div>
                         <nav class="login-links1">
                             <span class="login-nav121 bodySmall"><a href="home">Home</a></span>
-                            <span class="login-nav221 bodySmall"><a href="features">Features</a></span>
-                            <span class="login-nav321 bodySmall"><a href="reviews">Reviews</a></span>
-                            <span class="login-nav421 bodySmall"><a href="home">Home</a></span>
+                            <span class="login-nav221 bodySmall"><a href="ai">AI</a></span>
+                            <span class="login-nav321 bodySmall"><a href="budgets">budgets</a></span>
+                            <span class="login-nav421 bodySmall"><a href="investments">Investments</a></span>
                         </nav>
                         <div class="login-buttons1">
                             <a href="profile"><button class="buttonFilled">Profile</button></a>
@@ -753,19 +754,16 @@
             </header>
 
             <h1 class="login-features-heading"><br>
-                <span>Edit Profile</span><br>
+                <span> Change Password </span><br>
             </h1>
-            <form id="form" class="register-form" method="post"> <br><br><br>
+            <form id="form" class="change-form" method="post"> <br><br><br>
                 <center>
                     <h2 style="color:white">
-                        <label for="name"> Name : </label>
-                        <input type="text" value="{{user[1]}}" name="name" id="name"> <br> <br>
-                        <label for="mobile"> Number : </label>
-                        <input type="number" value="{{ user[4] }}" name="mobile" id="mobile"> <br> <br>
-                        <label for="email"> Email : </label>
-                        <input type="email" value="{{user[2]}}" name="email" id="email"> <br> <br>
+                        <label for="password"> New Password : </label>
+                        <input type="password" name="password" id="password"> <br> <br>
+                        <label for="confirm"> Confirm Password : </label>
+                        <input type="password" name="confirm" id="confirm"> <br> <br>
                         <input type="submit" class="login-button" value="Save">
-                        <a class="change" href="change"> Change Password </a>
                     </h2>
                 </center>
             </form>
@@ -775,19 +773,38 @@
     <script>
         document.getElementById("form").addEventListener("submit", function (event) {
             event.preventDefault();
-            var formData = new FormData(this);
-            fetch("/editProfile", {
-                method: "POST",
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert("Profile Updated Successfully !");
-                    location.reload();
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                });
+            var pass = document.getElementById("password").value;
+            var cpass = document.getElementById("confirm").value;
+
+            if (pass === cpass) {
+
+                const data = { password: pass };
+                const options = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                };
+
+                fetch('changePassword', options)
+                    .then(response => {
+                        if (!response.ok) {
+                            alert('Failed to change password.');
+                        } else {
+                            alert("Password Changed Successfully.");
+                            window.location.href = 'profile';
+                        }
+                    })
+                    .then(data => {
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
+            }
+            else {
+                alert("Passwords Don't Match");
+            }
         });
 
     </script>

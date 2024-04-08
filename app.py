@@ -71,8 +71,13 @@ def ai():
 
 @app.route('/dashboard')
 def dashboard():
-    name = str(session.get('username'))
-    return render_template('dashboard.html', name = name)
+    if 'id' in session:
+        name = str(session.get('username'))
+        return render_template('dashboard.html', name = name)
+    else :
+        js = "<script> alert('Do Login First!'); window.location.href='login'; </script>"
+        return js 
+
 
 @app.route('/budgets')
 def budgets():
@@ -313,6 +318,55 @@ def budgetDelete():
     cursor.close()
     js = "<script> alert('Budget Deleted Successfully !'); window.history.back(); </script>"
     return js
+
+@app.route('/profile')
+def profile():
+    id = session.get('id')
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM users WHERE id = %s", (id,))
+    user = cursor.fetchone()
+    cursor.close()
+    if user :
+        print(user)
+        return render_template('profile.html', user = user)
+    else:
+        js = "<script> alert('Do Login First!'); window.location.href='login'; </script>"
+        return js 
+
+@app.route('/editProfile', methods=['POST'])
+def editProfile():
+    id = session.get('id')
+    data = request.form
+    cursor = mysql.connection.cursor()
+    cursor.execute("UPDATE users SET name = %s, email = %s, mobile = %s WHERE id = %s",(data['name'], data['email'],data['mobile'], id))
+    mysql.connection.commit()
+    cursor.close()
+    print("Profile updated")
+    return jsonify({"message": "Updated"}), 200
+
+@app.route('/change')
+def change():
+    return render_template('change.html')
+
+@app.route('/changePassword', methods=['POST'])
+def change_password():
+    id = session.get('id')
+    new_password = request.json.get('password')
+
+    if not new_password:
+        return jsonify({'error': 'New password is missing'}), 400
+    
+    cursor = mysql.connection.cursor()
+    cursor.execute("UPDATE users SET password = %s WHERE id = %s", (new_password, id,))
+    mysql.connection.commit()
+    cursor.close()
+
+    return jsonify({'message': 'Password updated successfully'}), 200
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect("/login")
 
 if __name__ == '__main__':
     app.run(debug=True)

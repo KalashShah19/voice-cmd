@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <title> Artificial Intelligence </title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/aistyle.css') }}">
-
 </head>
 
 <body>
@@ -344,7 +343,7 @@
     };
 
     function interpret() {
-      var words = ["home", "features", "about us", "contact us", "reviews", "login", "register", "dashboard", "budgets", "goals", "investments"];
+      var words = ["home", "features", "about us", "contact us", "reviews", "login", "profile" , "register", "dashboard", "budgets", "goals", "investments"];
       var found = false;
 
       for (word in words) {
@@ -466,12 +465,12 @@
             createBudget(result);
           }
 
-          else if (result.includes("show")) { // 32
+          else if (result.includes("show budget")) { // 32
             openBudget(result);
             found = true;
           }
 
-          else if (result.includes("open")) { // 33
+          else if (result.includes("open budget")) { // 33
             openBudget(result);
             found = true;
           }
