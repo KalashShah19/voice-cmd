@@ -60,14 +60,14 @@
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
-
-        h2 {
-            text-align: center;
-        }
     </style>
 </head>
 
 <body>
+
+    <!-- <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/goal.css"> -->
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
@@ -145,46 +145,43 @@
             <form id="form">
                 <div class="form-group">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
+                    <input type="text" id="name" value="{{ record[3] }}" name="name" required>
                 </div>
                 <div class="form-group">
                     <label for="amount">Amount:</label>
-                    <input type="number" id="amount" name="amount" required>
+                    <input type="number" id="amount" value="{{ record[4] }}" name="amount" required>
                 </div>
                 <div class="form-group">
                     <label for="type">Type:</label>
                     <select id="type" name="type" required>
                         <option value="">Select Type</option>
-                        <option value="income">Income</option>
-                        <option value="expense">Expense</option>
+                        <option value="income" {% if record[2]=='income' %} selected {% endif %}>Income</option>
+                        <option value="expense" {% if record[2]=='expense' %} selected {% endif %}>Expense</option>
                     </select>
                 </div>
-                <input type="submit" value="Add">
+                <div class="form-group">
+                    <input type="hidden" value="{{ record[0] }}" name="rid">
+                </div>
+                <input type="submit" value="Update">
             </form>
         </div>
     </div>
     <script>
-        var url_string = window.location.href;
-        var url = new URL(url_string);
-        var name = url.searchParams.get("name");
-
         document.getElementById("form").addEventListener("submit", function (event) {
             event.preventDefault();
             var formData = new FormData(this);
-            formData.append('budget', name);
-            fetch("/newRecord", {
+            fetch("/edit", {
                 method: "POST",
                 body: formData
             })
                 .then(response => {
                     if (response.ok) {
-                        console.log("request sent");
-                        alert("Record Inserted!");
-                        window.location.href = 'budget?name=' + name;
+                        alert("Record Updated!");
+                        window.history.back();
                     }
                     else {
                         console.log("record error");
-                        alert("Error in Inserting Record!");
+                        alert("Error in Updating Record!");
                     }
                 })
                 .then(data => { })

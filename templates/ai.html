@@ -318,6 +318,31 @@
       }
     }
 
+    let currentIndex = 0;
+
+    function tips() {
+
+      var advices = [
+        "Diversify Your Investment Portfolio. Diversification is key to managing risk.",
+        "Invest in a mix of different assets to reduce risk and potentially increase returns.",
+        "Invest for the Long Term which guives you benefit from the power of compounding returns.",
+        "Assess your risk tolerance before investing and choose investments that align with your comfort level.",
+        "Stay updated on market trends, economic indicators, and news that gives opportunities to invest.",
+        "Start Investing Early, it will give advantage of Compounding Interest.",
+        "Always take calculated risks.",
+        "Safer Investments are always better than Riskier ones."
+      ];
+
+      if (currentIndex === advices.length) {
+        currentIndex = 0;
+      }
+
+      const selectedString = advices[currentIndex];
+      currentIndex++;
+
+      return selectedString;
+    };
+
     function interpret() {
       var words = ["home", "features", "about us", "contact us", "reviews", "login", "register", "dashboard", "budgets", "goals", "investments"];
       var found = false;
@@ -536,11 +561,72 @@
             respond("As an Finance AI Model and due to Security Policies, I am not able to take money from your bank account. Hope You'd Understand");
             found = true;
           }
+          
+          else if (result.includes("take my money")) { // 51
+            respond("As an Finance AI Model and due to Security Policies, I am not able to take money from your bank account. Hope You'd Understand");
+            found = true;
+          }
+
+
+          else if (result.includes("best investment")) { // 52
+            respond("It depends on many factors but generally Systematic Investment Plan or Mutual Funds is better than most other investment opetions as it is less risky.");
+            found = true;
+          }
+
+          else if (result.includes("advice about investing")) { // 53
+            respond(tips());
+            found = true;
+          }
+
+          else if (result.includes("investment advice")) { // 54
+            respond(tips());
+            found = true;
+          }
+
+          else if (result.includes("investment tips")) { // 55
+            respond(tips());
+            found = true;
+          }
+
+          else if (result.includes("advice for investment")) { // 56
+            respond(tips());
+            found = true;
+          }
+
+          else if (result.includes("advice for investing")) { // 57
+            respond(tips());
+            found = true;
+          }
+
+          else if (result.includes("investing advice")) { // 58
+            respond(tips());
+            found = true;
+          }
+
+          else if (result.includes("tips for investment")) { // 59
+            respond(tips());
+            found = true;
+          }
+
+          else if (result.includes("tips for investing")) { // 60
+            respond(tips());
+            found = true;
+          }
+
+          else if (result.includes("advice to invest")) { // 61
+            respond(tips());
+            found = true;
+          }
+
+          else if (result.includes("tips to invest")) { // 62
+            respond(tips());
+            found = true;
+          }
 
         }
       }
 
-      if (found == false) { // 51
+      if (found == false) { // 63
         respond("Sorry, I didn't Understand.");
       }
     }

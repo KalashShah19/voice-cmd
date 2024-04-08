@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Budgets </title>
     <style>
+        body {
+            text-transform: capitalize;
+        }
     </style>
 </head>
 
@@ -83,7 +86,7 @@
             </div>
             <br> <br> <br> <br>
             <h1 style="color: cyan;text-align: center;"> Budgets </h1>
-            <button class="add-goal-button"> Create new Budget </button>
+            <a href="newBudget" class="add-goal-button"> Create new Budget </a>
             <div class="container">
                 <div class="grid">
                     {% for budget in budgets %}
@@ -99,6 +102,15 @@
             </div>
         </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(window).bind("pageshow", function (event) {
+            if (event.originalEvent.persisted) {
+                console.log("Back!");
+                location.reload();
+            }
+        });
+    </script>
 </body>
 
 </html>

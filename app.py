@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, jsonify, session
+from flask import Flask, render_template, request, redirect, jsonify, session, render_template_string
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -80,7 +80,6 @@ def budgets():
     cursor.execute("SELECT * FROM budgets order by bid desc")
     budgets = cursor.fetchall()
     cursor.close()
-    print(budgets)
     return render_template('budgets.html', budgets = budgets)
 
 @app.route('/open', methods=['POST'])
@@ -106,14 +105,35 @@ def budget():
     expenses = cursor.fetchall()
     cursor.execute("SELECT * FROM records WHERE bid = %s and type = 'income'", (budget[0],))
     incomes = cursor.fetchall()
-    cursor.execute("SELECT sum(amount) FROM records WHERE bid = %s and type = 'income'", (budget[0],))
-    inc = cursor.fetchone()
-    inc = int(inc[0])
-    cursor.execute("SELECT sum(amount) FROM records WHERE bid = %s and type = 'expense'", (budget[0],))
-    exp = cursor.fetchone()
-    exp = int(exp[0])
-    cursor.close()
-    return render_template('budget.html', budget = budget, expenses = expenses, incomes = incomes, exp = exp, inc = inc )
+    
+    if len(expenses) == 0 and len(incomes) != 0 :
+        exp = 0
+        cursor.execute("SELECT sum(amount) FROM records WHERE bid = %s and type = 'income'", (budget[0],))
+        inc = cursor.fetchone()
+        inc = int(inc[0])
+        cursor.close()
+        return render_template('budget.html', budget = budget, expenses = expenses, incomes = incomes, exp = exp, inc = inc )
+        
+    if len(incomes) == 0 and len(expenses) != 0:
+        inc = 0
+        cursor.execute("SELECT sum(amount) FROM records WHERE bid = %s and type = 'expense'", (budget[0],))
+        exp = cursor.fetchone()
+        exp = int(exp[0])
+        cursor.close()
+        return render_template('budget.html', budget = budget, expenses = expenses, incomes = incomes, exp = exp, inc = inc )
+        
+    if len(expenses) == 0 and len(incomes) == 0:
+        return redirect('/record?name=%s' % name)
+    
+    else:
+        cursor.execute("SELECT sum(amount) FROM records WHERE bid = %s and type = 'income'", (budget[0],))
+        inc = cursor.fetchone()
+        inc = int(inc[0])
+        cursor.execute("SELECT sum(amount) FROM records WHERE bid = %s and type = 'expense'", (budget[0],))
+        exp = cursor.fetchone()
+        exp = int(exp[0])
+        cursor.close()
+        return render_template('budget.html', budget = budget, expenses = expenses, incomes = incomes, exp = exp, inc = inc )
 
 @app.route('/goals')
 def goals():
@@ -139,24 +159,9 @@ def transactions():
 def transaction():
     return render_template('transaction.html')
 
-@app.route('/record')
-def record():
-    return render_template('record.html')
-
-@app.route('/newRecord', methods=['POST'])
-def newRecord():
-    data = request.form
-    cursor = mysql.connection.cursor()
-    
-    cursor.execute("SELECT * FROM budgets WHERE name = %s", (data['budget'],))
-    budget = cursor.fetchone()
-    
-    cursor.execute("INSERT INTO records (bid,type,name,amount) VALUES (%s, %s, %s, %s)",(budget[0],data['type'],data['name'],data['amount']))
-    
-    mysql.connection.commit()
-    cursor.close()
-    
-    return jsonify({'message': 'Record added successfully'}), 200
+@app.route('/newBudget')
+def newBudget():
+    return render_template('newBudget.html')
 
 @app.route('/create', methods=['POST'])
 def create():
@@ -170,17 +175,20 @@ def create():
 @app.route('/createBudget', methods=['POST'])
 def createBudget():
     data = request.json
+    print("data")
+    print(data)
     name = data.get('name')
     amount = data.get('amount')
 
     if name is None or amount is None:
         return jsonify({'error': 'Name and amount are required parameters'}), 400
 
+    print("name = " + name + " amount = "  + amount)
     cursor = mysql.connection.cursor()
     cursor.execute("INSERT INTO budgets (name, amount, remaining) VALUES (%s, %s, %s)", (name, amount, amount))
     mysql.connection.commit()
     cursor.close()
-    return jsonify({"message": f"Creating budget '{name}' with amount {amount}"}), 200
+    return jsonify({'message': 'Budget Created successfully'}), 200
 
 @app.route('/addAmount', methods=['POST'])
 def addAmount():
@@ -239,6 +247,72 @@ def deductAmount():
     cursor.close()
 
     return jsonify({"message": f"Amount updated for budget '{name}' to {new_amount}"}), 200
+
+
+@app.route('/record')
+def record():
+    return render_template('record.html')
+
+@app.route('/newRecord', methods=['POST'])
+def newRecord():
+    data = request.form
+    cursor = mysql.connection.cursor()
+    
+    cursor.execute("SELECT * FROM budgets WHERE name = %s", (data['budget'],))
+    budget = cursor.fetchone()
+    
+    cursor.execute("INSERT INTO records (bid,type,name,amount) VALUES (%s, %s, %s, %s)",(budget[0],data['type'],data['name'],data['amount']))
+    
+    mysql.connection.commit()
+    cursor.close()
+    
+    return jsonify({'message': 'Record added successfully'}), 200
+
+@app.route('/deleteRecord')
+def deleteRecord():
+    rid = int(request.args.get('id'))
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM records WHERE rid = %s", (rid,))
+    mysql.connection.commit()
+    cursor.close()
+    js = "<script> alert('Record Deleted Successfully !'); window.history.back(); </script>"
+    return js
+
+@app.route('/editRecord')
+def editRecord():
+    rid = int(request.args.get('id'))
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM records where rid = %s", (rid,))
+    record = cursor.fetchone()
+    cursor.close()
+    if record :
+        return render_template('edit.html', record = record)
+    else:  
+        alert_script = "<script>alert('Record Not Found!');  window.history.back();</script>"
+    return render_template_string(alert_script)
+
+@app.route('/edit', methods=['POST'])
+def edit():
+    name = request.form['name']
+    amount = float(request.form['amount'])
+    record_type = request.form['type']
+    record_id = request.form['rid']
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE records SET name=%s, amount=%s, type=%s WHERE rid=%s', (name, amount, record_type, record_id))
+    mysql.connection.commit()
+    cursor.close()
+    return jsonify({'message': 'Record Updated successfully'}), 200
+
+@app.route('/budgetDelete')
+def budgetDelete():
+    name = request.args.get('name')
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM budgets WHERE name = %s", (name,))
+    mysql.connection.commit()
+    cursor.close()
+    js = "<script> alert('Budget Deleted Successfully !'); window.history.back(); </script>"
+    return js
 
 if __name__ == '__main__':
     app.run(debug=True)

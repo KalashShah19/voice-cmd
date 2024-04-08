@@ -153,9 +153,9 @@
                                 Rs </span></li>
                         {% for expense in expenses %}
                         <li><span> {{ expense[3] }} </span> <span>
-                                {{ expense[4] }} <a href="edit?id={{ expense[0] }}" class="btn btn-warning btn-sm"><i
-                                        class="fas fa-edit"></i></a>
-                                <a href="delete?id={{ expense[0] }}" class="btn btn-danger btn-sm"><i
+                                {{ expense[4] }} <a href="editRecord?id={{ expense[0] }}"
+                                    class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                <a href="deleteRecord?id={{ expense[0] }}" class="btn btn-danger btn-sm"><i
                                         class="fas fa-trash-alt"></i></a></span>
                         </li>
                         {% endfor %}
@@ -169,9 +169,9 @@
                                 Rs </span></li>
                         {% for income in incomes %}
                         <li> <span> {{ income[3] }} </span> <span>
-                                {{ income[4] }} <a href="edit?id={{ income[0] }}" class="btn btn-warning btn-sm"><i
-                                        class="fas fa-edit"></i></a>
-                                <a href="delete?id={{ income[0] }}" class="btn btn-danger btn-sm"><i
+                                {{ income[4] }} <a href="editRecord?id={{ income[0] }}"
+                                    class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                <a href="deleteRecord?id={{ income[0] }}" class="btn btn-danger btn-sm"><i
                                         class="fas fa-trash-alt"></i></a></span>
                         </li>
                         {% endfor %}
@@ -181,7 +181,15 @@
         </div>
     </div>
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+    $(window).bind("pageshow", function (event) {
+        if (event.originalEvent.persisted) {
+            console.log("Back!");
+            location.reload();
+        }
+    });
+
     var url_string = window.location.href;
     var url = new URL(url_string);
     var name = url.searchParams.get("name");
