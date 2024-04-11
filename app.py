@@ -177,6 +177,15 @@ def create():
     cursor.close()
     return jsonify({"message": "Creating..."}), 200
 
+@app.route('/deleteBudget', methods=['POST'])
+def deleteBudget():
+    name = request.json.get('name')
+    cursor = mysql.connection.cursor()
+    cursor.execute("delete from budgets where name = %s",(name,))
+    mysql.connection.commit()
+    cursor.close()
+    return jsonify({"message": "Creating..."}), 200
+
 @app.route('/createBudget', methods=['POST'])
 def createBudget():
     data = request.json
