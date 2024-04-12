@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Record Details Form</title>
+    <title>Link Account</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +16,7 @@
             height: 100vh;
             background-color: #161616;
         }
-
+        
         .recordContainer {
             width: 30%;
             background-color: #fff;
@@ -60,45 +60,45 @@
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
+
+        h2 {
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
 
-    <!-- <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="stylesheet" type="text/css" href="css/index.css">
-    <link rel="stylesheet" type="text/css" href="css/goal.css"> -->
-
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/goal.css') }}">
 
     <div class="home-container">
         {% include 'navbar.html' %}
+
         <br> <br> <br> <br> <br> <br> <br>
         <div class="recordContainer">
-            <h2>Record Details</h2>
-            <form id="form">
+            <h2>Account Details</h2>
+            <form id="form" method="post">
                 <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" value="{{ record[3] }}" name="name" required>
+                    <label for="name">Bank Name:</label>
+                    <input type="text" id="bank" name="bank" required>
                 </div>
                 <div class="form-group">
-                    <label for="amount">Amount:</label>
-                    <input type="number" id="amount" value="{{ record[4] }}" name="amount" required>
+                    <label for="amount">Number:</label>
+                    <input type="number" id="number" name="number" required>
                 </div>
                 <div class="form-group">
-                    <label for="type">Type:</label>
+                    <input type="hidden" id="amount" value="25000" name="amount" required>
+                </div>
+                <div class="form-group">
+                    <label for="type">Account Type:</label>
                     <select id="type" name="type" required>
                         <option value="">Select Type</option>
-                        <option value="income" {% if record[2]=='income' %} selected {% endif %}>Income</option>
-                        <option value="expense" {% if record[2]=='expense' %} selected {% endif %}>Expense</option>
+                        <option value="savings">Savings</option>
+                        <option value="current">Current</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <input type="hidden" value="{{ record[0] }}" name="rid">
-                </div>
-                <input type="submit" value="Update">
+                <input type="submit" value="Link">
             </form>
         </div>
     </div>
@@ -106,18 +106,20 @@
         document.getElementById("form").addEventListener("submit", function (event) {
             event.preventDefault();
             var formData = new FormData(this);
-            fetch("/edit", {
+            console.log(formData);
+            fetch("/link", {
                 method: "POST",
                 body: formData
             })
                 .then(response => {
                     if (response.ok) {
-                        alert("Record Updated!");
-                        window.history.back();
+                        console.log("linking");
+                        alert("Account Linked Successfully!");
+                        window.location.href = 'accounts';
                     }
                     else {
-                        console.log("record error");
-                        alert("Error in Updating Record!");
+                        console.log("linking error");
+                        alert("Error in linking account!");
                     }
                 })
                 .then(data => { })

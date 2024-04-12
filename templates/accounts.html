@@ -1,26 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>List of Accounts</title>
-    <link rel="stylesheet" href="static/css/accounts.css"> 
+    <title>Bank Accounts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #161616;
+        }
+
+        .unlink-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .account {
+            position: relative;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        li {
+            font-size: larger;
+            padding: 7px;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .account-info {
+            padding: 20px;
+        }
+
+        .account h2 {
+            margin-top: 0;
+        }
+
+        .acc {
+            color: black;
+            font-size: 30px;
+        }
+
+        .add-goal-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: x-large;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
 </head>
+
 <body>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <div>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
+        <div class="home-container">
+            {% include 'navbar.html' %}
 
-<div class="container">
-    <header>
-        <h1>List of Accounts</h1>
-    </header>
-
-    <div class="account-list">
-        <ul>
-            {% for account in accounts %}
-            <li>{{ account.name }} - {{ account.balance }}</li> 
-            {% endfor %}
-        </ul>
+            <br><br><br><br><br>
+            <h1>Bank Accounts</h1>
+            <a href="account" class="add-goal-button">Link Account </a>
+            <main>
+                {% for account in accounts %}
+                <section class="account">
+                    <a class="unlink-btn" href="unlink?number={{ account[0] }}">Unlink</a>
+                    <div class="account-info">
+                        <h2 class="acc">{{ account[2] }}</h2>
+                        <ul>
+                            <li>Balance: {{ account[3] }}</li>
+                            <li>Account Number: {{ account[0] }}</li>
+                            <li>Account Type: {{ account[4]}}</li>
+                        </ul>
+                    </div>
+                </section>
+                {% endfor %}
+            </main>
+        </div>
     </div>
-</div>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(window).bind("pageshow", function (event) {
+            if (event.originalEvent.persisted) {
+                console.log("Back!");
+                location.reload();
+            }
+        });
+    </script>
 </body>
+
 </html>

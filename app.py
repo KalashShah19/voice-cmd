@@ -142,15 +142,34 @@ def budget():
 
 @app.route('/goals')
 def goals():
-    return render_template('goals.html')
+    id = session.get("id")
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM goals where id = %s", (id,))
+    goals = cursor.fetchall()
+    cursor.close()
+    return render_template('goals.html', goals = goals)
 
 @app.route('/goal')
 def goal():
-    return render_template('goal.html')
+    gid = int(request.args.get('gid'))
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM goals where gid = %s", (gid,))
+    goal = cursor.fetchone()
+    cursor.close()
+    if goal:
+        return render_template('editGoal.html', goal = goal)
+    else:  
+        alert_script = "<script>alert('Goal Not Found!');  window.history.back();</script>"
+        return render_template_string(alert_script)
 
 @app.route('/investments')
 def investments():
-    return render_template('investments.html')
+    id = session.get("id")
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM investments where id = %s", (id,))
+    investments = cursor.fetchall()
+    cursor.close()
+    return render_template('investments.html', investments = investments)
 
 @app.route('/investment')
 def investment():
@@ -158,7 +177,12 @@ def investment():
 
 @app.route('/transactions')
 def transactions():
-    return render_template('transactions.html')
+    id = session.get("id")
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM records where id = %s", (id,))
+    transactions = cursor.fetchall()
+    cursor.close()
+    return render_template('transactions.html', transactions = transactions)
 
 @app.route('/transaction')
 def transaction():
@@ -376,6 +400,175 @@ def change_password():
 def logout():
     session.clear()
     return redirect("/login")
+
+@app.route('/test')
+def test():
+    return render_template('test.html')
+
+@app.route('/account')
+def account():
+    return render_template('account.html')
+
+@app.route('/accounts')
+def accounts():
+    id = session.get("id")
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM accounts where id = %s", (id,))
+    accounts = cursor.fetchall()
+    cursor.close()
+    return render_template('accounts.html', accounts = accounts)
+
+@app.route('/setAmount', methods=['POST'])
+def setAmount():
+    data = request.json
+    name = data.get('name')
+    amount = data.get('amount')
+
+    if name is None or amount is None:
+        return jsonify({'error': 'Name and amount are required parameters'}), 400
+
+    try:
+        amount = float(amount)
+    except ValueError:
+        return jsonify({'error': 'Amount must be a number'}), 400
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM budgets WHERE name = %s", (name,))
+    budget = cursor.fetchone()
+
+    if budget is None:
+        return jsonify({'error': 'Budget does not exist'}), 404
+
+    cursor.execute("UPDATE budgets SET amount = %s WHERE name = %s", (amount, name))
+    mysql.connection.commit()
+    cursor.close()
+
+    return jsonify({"message": f"Amount updated for budget '{name}' to {amount}"}), 200
+
+@app.route('/getAmount')
+def getAmount():
+    name = request.args.get('name')
+    if name is None:
+        return jsonify({'error': 'Name is required parameters'}), 400
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM budgets WHERE name = %s", (name,))
+    budget = cursor.fetchone()
+    if budget is None:
+        return jsonify({'error': 'Budget does not exist'}), 404
+    amount = budget[2] 
+    return jsonify({"amount": amount}), 200
+
+@app.route('/link', methods=['POST'])
+def link():
+    data = request.form
+    cursor = mysql.connection.cursor()
+    
+    cursor.execute("INSERT INTO `accounts`(`number`, `id`, `name`, `balance`, `type`) VALUES (%s, %s, %s, %s, %s)",(data['number'],session.get("id"),data["bank"],data['amount'],data['type'],))
+    
+    mysql.connection.commit()
+    cursor.close()
+    
+    return jsonify({'message': 'Account Linked successfully'}), 200
+
+@app.route('/unlink')
+def unlink():
+    id = session.get('id')
+    number = request.args.get('number')
+    
+    if number:  
+        cursor = mysql.connection.cursor()
+        cursor.execute("DELETE FROM accounts WHERE number = %s and id = %s", (number, id,))
+        mysql.connection.commit()
+        cursor.close()
+        js = "<script> alert('Account Unlinked Successfully !'); window.location.href='accounts'; </script>"
+        return js
+    
+    name = request.args.get('name')
+    if name: 
+        cursor = mysql.connection.cursor()
+        cursor.execute("DELETE FROM accounts WHERE name = %s and id = %s", (name,id,))
+        mysql.connection.commit()
+        cursor.close()
+        js = "<script> alert('Account Unlinked Successfully !'); window.location.href='accounts'; </script>"
+        return js
+
+@app.route('/Stocks')
+def Stocks():
+    return render_template("stocks.html")
+
+@app.route('/MF')
+def MF():
+    return render_template("MF.html")
+
+@app.route('/FD')
+def FD():
+    return render_template("FD.html")
+
+@app.route('/chart')
+def chart():
+    return render_template("chart.html")
+
+@app.route('/createGoal', methods=['POST'])
+def createGoal():
+    data = request.json
+    name = data.get('name')
+    amount = data.get('amount')
+    id = session.get('id')
+
+    if name is None or amount is None:
+        return jsonify({'error': 'Name and amount are required parameters'}), 400
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO goals (name, amount, achieved, id) VALUES (%s, %s, %s,%s)", (name, amount, 0, id,))
+    mysql.connection.commit()
+    cursor.close()
+    return jsonify({'message': 'Goal Created successfully'}), 200
+
+@app.route('/deleteGoal', methods=['POST'])
+def deleteGoal():
+    data = request.json
+    name = data.get('name')
+    
+    if name is None:
+        return jsonify({'error': 'Name is required parameters'}), 400
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("delete from goals where name = %s",(name,))
+    mysql.connection.commit()
+    cursor.close()
+    return jsonify({'message': 'Goal Created successfully'}), 200
+
+@app.route('/addGoal', methods=['POST'])
+def addGoal():
+    data = request.json
+    name = data.get('name')
+    amount = data.get('amount')
+    print("goal")
+    print(name)
+    print(amount)
+
+    if name is None or amount is None:
+        return jsonify({'error': 'Name and amount are required parameters'}), 400
+
+    try:
+        amount = float(amount)
+    except ValueError:
+        return jsonify({'error': 'Amount must be a number'}), 400
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM goals WHERE name = %s", (name,))
+    goal = cursor.fetchone()
+
+    if goal is None:
+        return jsonify({'error': 'Goal does not exist'}), 404
+
+    new_amount = float(goal[4]) + amount 
+
+    cursor.execute("UPDATE goals SET achieved = %s WHERE name = %s", (new_amount, name))
+    mysql.connection.commit()
+    cursor.close()
+
+    return jsonify({"message": f"Amount updated for budget '{name}' to {new_amount}"}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

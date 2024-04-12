@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Record Details Form</title>
+    <title>goal Details Form</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,7 +17,7 @@
             background-color: #161616;
         }
 
-        .recordContainer {
+        .goalContainer {
             width: 30%;
             background-color: #fff;
             padding: 20px;
@@ -76,27 +76,23 @@
     <div class="home-container">
         {% include 'navbar.html' %}
         <br> <br> <br> <br> <br> <br> <br>
-        <div class="recordContainer">
-            <h2>Record Details</h2>
+        <div class="goalContainer">
+            <h2>Goal Details</h2>
             <form id="form">
                 <div class="form-group">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" value="{{ record[3] }}" name="name" required>
+                    <input type="text" id="name" value="{{ goal[3] }}" name="name" required>
                 </div>
                 <div class="form-group">
                     <label for="amount">Amount:</label>
-                    <input type="number" id="amount" value="{{ record[4] }}" name="amount" required>
+                    <input type="number" id="amount" value="{{ goal[4] }}" name="amount" required>
                 </div>
                 <div class="form-group">
-                    <label for="type">Type:</label>
-                    <select id="type" name="type" required>
-                        <option value="">Select Type</option>
-                        <option value="income" {% if record[2]=='income' %} selected {% endif %}>Income</option>
-                        <option value="expense" {% if record[2]=='expense' %} selected {% endif %}>Expense</option>
-                    </select>
+                    <label for="amount">Achieved:</label>
+                    <input type="number" id="achieved" value="{{ goal[4] }}" name="achieved" required>
                 </div>
                 <div class="form-group">
-                    <input type="hidden" value="{{ record[0] }}" name="rid">
+                    <input type="hidden" value="{{ goal[0] }}" name="gid">
                 </div>
                 <input type="submit" value="Update">
             </form>
@@ -106,18 +102,18 @@
         document.getElementById("form").addEventListener("submit", function (event) {
             event.preventDefault();
             var formData = new FormData(this);
-            fetch("/edit", {
+            fetch("/editGoal", {
                 method: "POST",
                 body: formData
             })
                 .then(response => {
                     if (response.ok) {
-                        alert("Record Updated!");
+                        alert("Goal Updated!");
                         window.history.back();
                     }
                     else {
-                        console.log("record error");
-                        alert("Error in Updating Record!");
+                        console.log("goal error");
+                        alert("Error in Updating goal!");
                     }
                 })
                 .then(data => { })

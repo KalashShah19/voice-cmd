@@ -4,10 +4,8 @@
     padding: 20px;
 }
 
-header {
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
+h1{
+    color: white;
     text-align: center;
 }
 
@@ -28,6 +26,7 @@ th, td {
     padding: 10px;
     border-bottom: 1px solid #ddd;
     text-align: left;
+    font-size: large;
 }
 
 th {
@@ -41,4 +40,9 @@ th:first-child, td:first-child {
 
 th:last-child, td:last-child {
     border-right: 1px solid #ddd;
+}
+
+body{
+    background-color: #161616;
+    text-transform: capitalize ;
 }

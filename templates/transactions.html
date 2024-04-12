@@ -1,41 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaction List</title>
-    <link rel="stylesheet" href="static/css/transactions.css">
 </head>
+
 <body>
 
-<div class="transactionsContainer">
-    <header>
-        <h1>Transaction List</h1>
-    </header>
+    <div>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
 
-    <div class="transaction-list">
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Amount</th>
-                    <th>Description</th>
-                    <th>Type</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for transaction in transactions %}
-                <tr>
-                    <td>{{ transaction.date }}</td>
-                    <td>${{ transaction.amount }}</td>
-                    <td>{{ transaction.description }}</td>
-                    <td>{{ transaction.type }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/transactions.css')}}">
+        {% include 'navbar.html' %}
+        <br><br><br><br><br><br>
+
+        <div class="transactionsContainer">
+
+            <h1>Transaction List</h1>
+
+            <div class="transaction-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction[3] }}</td>
+                            <td>{{ transaction[4] }} Rs</td>
+                            <td>{{ transaction[2] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-</div>
-
 </body>
+
 </html>

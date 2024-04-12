@@ -1,25 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Financial Goal Details</title>
-    <link rel="stylesheet" href="static/css/goal.css">
 </head>
+
 <body>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 
-<div class="goalContainer">
-    <header>
-        <h1>Financial Goal Details</h1>
-    </header>
+    <div>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/goal.css')}}">
+        <div class="home-container"></div>
+        {% include 'navbar.html' %}
+        <div class="goalContainer">
+            <header>
+                <h1>Financial Goal Details</h1>
+            </header>
 
-    <div class="goal-details">
-        <h2>{{ goal.name }}</h2>
-        <p>Description: {{ goal.description }}</p>
-        <p>Target Amount: ${{ goal.target_amount }}</p>
-        <p>Deadline: {{ goal.deadline }}</p>
-    </div>
-</div>
+            <div class="goal-details">
+                <h2> {{ goal.name }} </h2>
+                <p> Description: {{ goal.description }}</p>
+                <p> Target Amount: ${{ goal.amount }}</p>
+                <p> Achieved : {{ goal.achieved }}</p>
+            </div>
+        </div>
 
 </body>
+
 </html>

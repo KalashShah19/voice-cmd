@@ -67,7 +67,35 @@
 
     function getName(text) {
       const words = text.split(' ');
-      const nameIndex = words.findIndex(word => word.toLowerCase() === 'name');
+      const nameIndex = words.findIndex(word => {
+        const lowerCaseWord = word.toLowerCase();
+        return lowerCaseWord === 'name' || lowerCaseWord === 'named';
+      });
+
+      if (nameIndex !== -1 && nameIndex < words.length - 1) {
+        return words[nameIndex + 1];
+      } else {
+        return "";
+      }
+    }
+
+    function getBank(text) {
+      const words = text.split(' ');
+      const nameIndex = words.findIndex(word => word.toLowerCase() === 'bank');
+      if (nameIndex !== -1 && nameIndex > 0) {
+        return words[nameIndex - 1];
+      } else {
+        return "";
+      }
+    }
+
+    function getGoal(text) {
+      const words = text.split(' ');
+      const nameIndex = words.findIndex(word => {
+        const lowerCaseWord = word.toLowerCase();
+        return lowerCaseWord === 'goal';
+      });
+
       if (nameIndex !== -1 && nameIndex < words.length - 1) {
         return words[nameIndex + 1];
       } else {
@@ -344,6 +372,220 @@
             });
 
           var msg = "Deducted " + amount + " rs from the budget named " + name + "...";
+          respond(msg);
+        }
+        else {
+          respond("I Can't find the amount. Could you clarify your command?");
+        }
+      }
+    }
+
+    function setAmount() {
+      var name = getName(result);
+      if (name == "") {
+        name = getBudgetName(result);
+      }
+      if (name == "") {
+        respond("Can't find the name of Budget. Could you clarify your command?");
+      }
+      else {
+        let amount = getAmount(result);
+        if (amount != 0) {
+
+          const data = { name: name, amount: amount };
+          const options = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          };
+
+          fetch('setAmount', options)
+            .then(response => {
+              if (response.ok) {
+                alert("Amount updated Successfully.");
+                window.location.href = 'budgets';
+              } else if (response.status === 404) {
+                respond("Couldn't find Budget, Could you clarify your command with budget name clearly?");
+              }
+              else {
+                respond("Failed to update amount.")
+              }
+            })
+            .then(data => {
+              console.log("Amount updated Successfully.", data);
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+
+          var msg = "Updating " + amount + " rs to the budget named " + name + "...";
+          respond(msg);
+        }
+        else {
+          respond("I Can't find the amount. Could you clarify your command?");
+        }
+      }
+    }
+
+    function unlink(result) {
+      var bank = getBank(result);
+      respond("unlinking Your Bank Account...");
+      setTimeout(function () {
+        window.location.href = 'unlink?name=' + bank;
+      }, 2000);
+    }
+
+    function getBalance(result) {
+      var name = getName(result);
+      if (name == "") {
+        name = getBudgetName(result);
+      }
+      if (name == "") {
+        respond("Can't find the name of Budget. Could you clarify your command?");
+      }
+      else {
+        const options = {
+          method: 'GET'
+        };
+
+        fetch('getAmount?name=' + name, options)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Failed to get balance.');
+            } else {
+              return response.json();
+            }
+          })
+          .then(data => {
+            console.log(data);
+            var amount = data.amount;
+            respond("Balance of Budget " + name + " is " + amount);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      }
+    }
+
+    function createGoal(result) {
+      var name = getName(result);
+      if (name == "") {
+        name = getBudgetName(result);
+      }
+
+      let amount = getAmount(result);
+      console.log("name = " + name + " amount = " + amount);
+
+      if (amount != 0) {
+        const data = { name: name, amount: amount };
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        };
+
+        fetch('createGoal', options)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Failed to create new goal');
+            } else {
+              alert("Goal created Successfully.");
+              window.location.href = 'goals';
+            }
+          })
+          .then(data => {
+
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+
+        var msg = "Creating goal named " + name + " with Amount " + amount + " ...";
+        respond(msg);
+        found = true;
+      }
+      else {
+        respond("Amount not found, specify command properly.")
+      }
+    }
+
+    function deleteGoal(result) {
+      var name = getName(result);
+      if (name == "") {
+        name = getBudgetName(result);
+      }
+      const data = { name: name };
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      };
+
+      fetch('deleteGoal', options)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to delete goal.');
+          } else {
+            alert("Budget Goal Successfully.");
+            window.location.href = 'goals';
+            return response.json();
+          }
+        })
+        .then(data => {
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+
+      var msg = "Deleting Goal named " + name + " ...";
+      respond(msg);
+      found = true;
+    }
+
+    function addGoal() {
+      var name = getGoal(result);
+      if (name == "") {
+        respond("Can't find the name of Goal. Could you clarify your command?");
+      }
+      else {
+        let amount = getAmount(result);
+        if (amount != 0) {
+
+          const data = { name: name, amount: amount };
+          const options = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          };
+
+          fetch('addGoal', options)
+            .then(response => {
+              if (response.ok) {
+                alert("Amount added to Goal Successfully.");
+                window.location.href = 'goals';
+              } else if (response.status === 404) {
+                respond("Couldn't find goal, Could you clarify your command with budget name clearly?");
+              }
+              else {
+                respond("Failed to add amount.")
+              }
+            })
+            .then(data => {
+              console.log("Amount added to goal Successfully.", data);
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+
+          var msg = "Adding " + amount + " rs to the goal named " + name + "...";
           respond(msg);
         }
         else {
@@ -659,6 +901,56 @@
 
           else if (result.includes("delete budget")) { // 62
             deleteBudget(result);
+            found = true;
+          }
+
+          else if (result.includes("unlink")) { // 62
+            unlink(result);
+            found = true;
+          }
+
+          else if (result.includes("set")) { // 62
+            setAmount(result);
+            found = true;
+          }
+
+          else if (result.includes("update")) { // 62
+            setAmount(result);
+            found = true;
+          }
+
+          else if (result.includes("balance of budget")) { // 62
+            getBalance(result);
+            found = true;
+          }
+
+          else if (result.includes("new goal")) { // 62
+            createGoal(result);
+            found = true;
+          }
+
+          else if (result.includes("create goal")) { // 62
+            createGoal(result);
+            found = true;
+          }
+
+          else if (result.includes("create a goal")) { // 62
+            createGoal(result);
+            found = true;
+          }
+
+          else if (result.includes("create a new goal")) { // 62
+            createGoal(result);
+            found = true;
+          }
+
+          else if (result.includes("delete goal")) { // 62
+            deleteGoal(result);
+            found = true;
+          }
+          
+          else if (result.includes("saved")) { // 62
+            addGoal(result);
             found = true;
           }
 
