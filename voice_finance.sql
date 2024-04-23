@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 13, 2024 at 04:57 PM
+-- Generation Time: Apr 14, 2024 at 10:51 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -24,6 +24,128 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `accounts`
+--
+
+CREATE TABLE `accounts` (
+  `number` bigint(11) NOT NULL,
+  `id` int(11) NOT NULL,
+  `name` varchar(256) NOT NULL,
+  `balance` float NOT NULL,
+  `type` varchar(25) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `accounts`
+--
+
+INSERT INTO `accounts` (`number`, `id`, `name`, `balance`, `type`) VALUES
+(5451300, 19, 'ICICI', 25000, 'savings');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `budgets`
+--
+
+CREATE TABLE `budgets` (
+  `bid` int(11) NOT NULL,
+  `name` varchar(256) NOT NULL,
+  `amount` decimal(10,2) DEFAULT 0.00,
+  `remaining` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `description` text DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `budgets`
+--
+
+INSERT INTO `budgets` (`bid`, `name`, `amount`, `remaining`, `description`, `date`, `id`) VALUES
+(1, 'travel', '8000.00', '1000.00', NULL, NULL, 19);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `goals`
+--
+
+CREATE TABLE `goals` (
+  `gid` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(256) DEFAULT NULL,
+  `amount` float NOT NULL,
+  `achieved` float NOT NULL,
+  `id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `goals`
+--
+
+INSERT INTO `goals` (`gid`, `name`, `description`, `amount`, `achieved`, `id`) VALUES
+(1, 'Car', 'Buy car by the end of this year', 1700000, 50000, 19),
+(8, 'travel', NULL, 15000, 5000, 19),
+(9, 'trip', NULL, 5000, 5000, 19);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `investments`
+--
+
+CREATE TABLE `investments` (
+  `iid` int(11) NOT NULL,
+  `name` varchar(256) NOT NULL,
+  `type` varchar(100) NOT NULL,
+  `rate` float NOT NULL,
+  `returns` float NOT NULL,
+  `invested` float NOT NULL,
+  `total` decimal(10,0) NOT NULL,
+  `date` date NOT NULL,
+  `id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `investments`
+--
+
+INSERT INTO `investments` (`iid`, `name`, `type`, `rate`, `returns`, `invested`, `total`, `date`, `id`) VALUES
+(1, 'Shares', 'Stocks', 11, 25000, 10000, '35000', '2021-04-19', 19),
+(2, 'dividend fund', 'MF', 11, 50000, 10000000, '1050000', '2020-04-19', 19),
+(3, 'FD', 'FD', 7, 500, 10000, '10500', '2024-04-10', 19);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `records`
+--
+
+CREATE TABLE `records` (
+  `rid` int(11) NOT NULL,
+  `bid` int(11) DEFAULT NULL,
+  `type` varchar(20) DEFAULT NULL,
+  `name` varchar(200) NOT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `records`
+--
+
+INSERT INTO `records` (`rid`, `bid`, `type`, `name`, `amount`, `id`) VALUES
+(7, 1, 'income', 'Budget', '5000.00', 19),
+(8, 1, 'expense', 'Tickets Booking', '1000.00', 19),
+(9, 1, 'expense', 'Food', '1500.00', 19),
+(10, 1, 'expense', 'Hotel Booking', '1500.00', 19),
+(15, 2, 'income', 'Budget', '1500.00', 19),
+(16, 2, 'expense', 'Pizza ', '500.00', 19);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -40,11 +162,42 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `mobile`) VALUES
-(1, 'Kalash', 'kalash@gmail.com', 'Kalash', 9632587410);
+(19, 'Kalash', 'kalash@gmail.com', 'kalash', 9632587410),
+(20, 'jainam', 'jainam@gmail.com', 'jainam', 9632587410);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `accounts`
+--
+ALTER TABLE `accounts`
+  ADD PRIMARY KEY (`number`);
+
+--
+-- Indexes for table `budgets`
+--
+ALTER TABLE `budgets`
+  ADD PRIMARY KEY (`bid`);
+
+--
+-- Indexes for table `goals`
+--
+ALTER TABLE `goals`
+  ADD PRIMARY KEY (`gid`);
+
+--
+-- Indexes for table `investments`
+--
+ALTER TABLE `investments`
+  ADD PRIMARY KEY (`iid`);
+
+--
+-- Indexes for table `records`
+--
+ALTER TABLE `records`
+  ADD PRIMARY KEY (`rid`);
 
 --
 -- Indexes for table `users`
@@ -58,10 +211,40 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `accounts`
+--
+ALTER TABLE `accounts`
+  MODIFY `number` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7010020030;
+
+--
+-- AUTO_INCREMENT for table `budgets`
+--
+ALTER TABLE `budgets`
+  MODIFY `bid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `goals`
+--
+ALTER TABLE `goals`
+  MODIFY `gid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `investments`
+--
+ALTER TABLE `investments`
+  MODIFY `iid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `records`
+--
+ALTER TABLE `records`
+  MODIFY `rid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

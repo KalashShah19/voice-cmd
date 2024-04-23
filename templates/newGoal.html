@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Record Details</title>
+    <title>Goal Details </title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -78,7 +78,7 @@
 
         <br> <br> <br> <br> <br> <br> <br>
         <div class="recordContainer">
-            <h2>Record Details</h2>
+            <h2>Goal Details</h2>
             <form id="form">
                 <div class="form-group">
                     <label for="name">Name:</label>
@@ -88,40 +88,31 @@
                     <label for="amount">Amount:</label>
                     <input type="number" id="amount" name="amount" required>
                 </div>
-                <div class="form-group">
-                    <label for="type">Type:</label>
-                    <select id="type" name="type" required>
-                        <option value="">Select Type</option>
-                        <option value="income">Income</option>
-                        <option value="expense">Expense</option>
-                    </select>
-                </div>
                 <input type="submit" value="Add">
             </form>
         </div>
     </div>
     <script>
-        var url_string = window.location.href;
-        var url = new URL(url_string);
-        var name = url.searchParams.get("name");
-
         document.getElementById("form").addEventListener("submit", function (event) {
             event.preventDefault();
-            var formData = new FormData(this);
-            formData.append('budget', name);
-            fetch("/newRecord", {
+            var name = document.getElementById('name').value;
+            var amount = document.getElementById('amount').value;
+            var data = { name : name, amount: amount }
+            console.log(data);
+            fetch("/createGoal", {
                 method: "POST",
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
             })
                 .then(response => {
                     if (response.ok) {
-                        console.log("request sent");
-                        alert("Record Inserted!");
-                        window.location.href = 'budget?name=' + name;
+                        alert("Goal Created!");
+                        window.location.href = 'goals';
                     }
                     else {
-                        console.log("record error");
-                        alert("Error in Inserting Record!");
+                        alert("Error in Creating Goal!");
                     }
                 })
                 .then(data => { })

@@ -146,10 +146,29 @@ def goals():
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM goals where id = %s", (id,))
     goals = cursor.fetchall()
+    print(goals)
     cursor.close()
-    return render_template('goals.html', goals = goals)
+    goals_with_percentage = []
+    
+    for goal in goals:
 
-@app.route('/goal')
+        if goal[3] > 0:
+            percentage = (goal[4] / goal[3]) * 100
+            percentage = int(percentage)
+        else:
+            percentage = 0
+
+        goals_with_percentage.append({
+            'id': goal[0],
+            'name': goal[1],
+            'amount': goal[3],
+            'achieved': goal[4],
+            'percentage': percentage
+        })
+
+    return render_template('goals.html', goals=goals_with_percentage)
+
+@app.route('/editGoal')
 def goal():
     gid = int(request.args.get('gid'))
     cursor = mysql.connection.cursor()
@@ -195,6 +214,7 @@ def newBudget():
 @app.route('/create', methods=['POST'])
 def create():
     name = request.json.get('name')
+    print("creating name =", name)
     cursor = mysql.connection.cursor()
     cursor.execute("INSERT INTO budgets (name) VALUES (%s)",(name,))
     mysql.connection.commit()
@@ -300,18 +320,49 @@ def newRecord():
     budget = cursor.fetchone()
     
     cursor.execute("INSERT INTO records (bid,type,name,amount) VALUES (%s, %s, %s, %s)",(budget[0],data['type'],data['name'],data['amount']))
+
+    cursor.execute("SELECT remaining FROM budgets WHERE bid = %s", (budget[0],))
+    remaining_amount = cursor.fetchone()[0]
+    remaining_amount = float(remaining_amount)
+        
+    if data['type'] == 'expense':
+        new_remaining_amount = remaining_amount - float(data['amount'])
     
+    else:
+        new_remaining_amount = remaining_amount + float(data['amount'])
+
+    cursor.execute("UPDATE budgets SET remaining = %s WHERE bid = %s", (new_remaining_amount, budget[0]))
     mysql.connection.commit()
+
+        
     cursor.close()
-    
     return jsonify({'message': 'Record added successfully'}), 200
 
 @app.route('/deleteRecord')
 def deleteRecord():
     rid = int(request.args.get('id'))
     cursor = mysql.connection.cursor()
+    
+    cursor.execute("SELECT bid FROM records WHERE rid = %s", (rid,))
+    rec = cursor.fetchone()
+    bid = rec[0]
+    
     cursor.execute("DELETE FROM records WHERE rid = %s", (rid,))
     mysql.connection.commit()
+    
+    cursor.execute("SELECT sum(amount) FROM records WHERE bid = %s and type = 'expense'", (bid,))
+    exp = cursor.fetchone()
+    exp = exp[0]
+    
+    cursor.execute("SELECT sum(amount) FROM records WHERE bid = %s and type = 'income'", (bid,))
+    inc = cursor.fetchone()
+    inc = inc[0]
+    
+    remaining = inc - exp    
+    
+    cursor.execute("update budgets set remaining = %s where bid = %s", (remaining, bid,))
+    mysql.connection.commit()
+    
     cursor.close()
     js = "<script> alert('Record Deleted Successfully !'); window.history.back(); </script>"
     return js
@@ -335,9 +386,23 @@ def edit():
     amount = float(request.form['amount'])
     record_type = request.form['type']
     record_id = request.form['rid']
+    bid = request.form['bid']
 
     cursor = mysql.connection.cursor()
     cursor.execute('UPDATE records SET name=%s, amount=%s, type=%s WHERE rid=%s', (name, amount, record_type, record_id))
+    mysql.connection.commit()
+    
+    cursor.execute("SELECT sum(amount) FROM records WHERE bid = %s and type = 'expense'", (bid,))
+    exp = cursor.fetchone()
+    exp = exp[0]
+    
+    cursor.execute("SELECT sum(amount) FROM records WHERE bid = %s and type = 'income'", (bid,))
+    inc = cursor.fetchone()
+    inc = inc[0]
+    
+    remaining = inc - exp    
+    
+    cursor.execute("update budgets set remaining = %s where bid = %s", (remaining, bid,))
     mysql.connection.commit()
     cursor.close()
     return jsonify({'message': 'Record Updated successfully'}), 200
@@ -508,15 +573,19 @@ def FD():
 def chart():
     return render_template("chart.html")
 
+@app.route('/newGoal')
+def newGoal():
+    return render_template("newGoal.html")
+
 @app.route('/createGoal', methods=['POST'])
 def createGoal():
     data = request.json
     name = data.get('name')
     amount = data.get('amount')
-    id = session.get('id')
+    id = session.get('id')  
 
     if name is None or amount is None:
-        return jsonify({'error': 'Name and amount are required parameters'}), 400
+        return jsonify({'error': 'Name and amount are required parameters'}), 404
 
     cursor = mysql.connection.cursor()
     cursor.execute("INSERT INTO goals (name, amount, achieved, id) VALUES (%s, %s, %s,%s)", (name, amount, 0, id,))

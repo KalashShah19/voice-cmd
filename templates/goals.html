@@ -86,21 +86,21 @@
 
         <div class="home-container">
             {% include 'navbar.html' %}
-
             <br> <br> <br> <br>
             <h1 style="color: cyan;text-align: center;"> Goals </h1>
-            <button class="add-goal-button">Add New Goal</button>
+            <a href="newGoal" class="add-goal-button"> Create new Goal </a>
             <div class="container">
                 <div class="grid">
                     {% for goal in goals %}
                     <div class="goal-card">
-                        <h2> {{ goal[1] }} </h2>
-                        <p>Amount: Rs {{ goal[3] }}  </p>
+                        <h2> {{ goal.name }} </h2>
+                        <p>Amount: Rs {{ goal.amount }}  </p>
+                        <p>Achieved: Rs {{ goal.achieved }}  </p>
                         <div class="progress-bar">
-                            <!-- <div class="progress-bar-inner" style="width:  {{ perc }} %"></div> -->
-                            <div class="progress-bar-inner" style="width:50%; text-align: center;color:white"> 50 %</div>
+                            <div class="progress-bar-inner" style="text-align: center;color:white; width:{{goal.percentage}}%"> {{ goal.percentage }}% </div>
+                            <!-- <div class="progress-bar-inner" style="width:50%; text-align: center;color:white"> 50 %</div> -->
                         </div>
-                        <a href="editGoal?gid={{ goal[0] }}" class="edit-button">Edit</a>
+                        <a href="editGoal?gid={{ goal.id }}" class="edit-button">Edit</a>
                     </div>
                     {% endfor %}
                 </div>
