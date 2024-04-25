@@ -169,7 +169,7 @@ def goals():
     return render_template('goals.html', goals=goals_with_percentage)
 
 @app.route('/editGoal')
-def goal():
+def editGoal():
     gid = int(request.args.get('gid'))
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM goals where gid = %s", (gid,))
@@ -180,6 +180,38 @@ def goal():
     else:  
         alert_script = "<script>alert('Goal Not Found!');  window.history.back();</script>"
         return render_template_string(alert_script)
+
+@app.route('/goalEdit', methods=['POST'])
+def goalEdit():
+    data = request.json
+    name = data.get('name')
+    amount = data.get('amount')
+    achieved = data.get('achieved')
+    gid = data.get('gid')
+
+
+    if name is None or amount is None:
+        return jsonify({'error': 'Name and amount are required parameters'}), 400
+
+    try:
+        amount = float(amount)
+    except ValueError:
+        return jsonify({'error': 'Amount must be a number'}), 400
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM goals WHERE name = %s", (name,))
+    goal = cursor.fetchone()
+
+    if goal is None:
+        return jsonify({'error': 'Goal does not exist'}), 404
+
+    new_amount = float(goal[4]) + amount 
+
+    cursor.execute("UPDATE goals SET name = %s, amount = %s, achieved = %s WHERE gid = %s", (name, amount, achieved, gid))
+    mysql.connection.commit()
+    cursor.close()
+
+    return jsonify({"message": f"Amount updated for budget '{name}' to {new_amount}"}), 200
 
 @app.route('/investments')
 def investments():
@@ -198,7 +230,7 @@ def investment():
 def transactions():
     id = session.get("id")
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM records where id = %s", (id,))
+    cursor.execute("SELECT * FROM records WHERE id = %s ORDER BY rid DESC", (id,))
     transactions = cursor.fetchall()
     cursor.close()
     return render_template('transactions.html', transactions = transactions)
@@ -315,11 +347,11 @@ def record():
 def newRecord():
     data = request.form
     cursor = mysql.connection.cursor()
-    
+    id = session.get("id")
     cursor.execute("SELECT * FROM budgets WHERE name = %s", (data['budget'],))
     budget = cursor.fetchone()
     
-    cursor.execute("INSERT INTO records (bid,type,name,amount) VALUES (%s, %s, %s, %s)",(budget[0],data['type'],data['name'],data['amount']))
+    cursor.execute("INSERT INTO records (bid,type,name,amount,id) VALUES (%s, %s, %s, %s,%s)",(budget[0],data['type'],data['name'],data['amount'], id))
 
     cursor.execute("SELECT remaining FROM budgets WHERE bid = %s", (budget[0],))
     remaining_amount = cursor.fetchone()[0]
@@ -638,6 +670,16 @@ def addGoal():
     cursor.close()
 
     return jsonify({"message": f"Amount updated for budget '{name}' to {new_amount}"}), 200
+
+@app.route('/goalDelete')
+def goalDelete():
+    gid = request.args.get('gid')
+    cursor = mysql.connection.cursor()
+    cursor.execute("delete from goals where gid = %s",(gid,))
+    mysql.connection.commit()
+    cursor.close()
+    alert_script = "<script>alert('Goal Deleted!');  window.history.back();</script>"
+    return render_template_string(alert_script)
 
 if __name__ == '__main__':
     app.run(debug=True)

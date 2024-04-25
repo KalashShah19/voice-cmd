@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             background-color: #161616;
+            text-transform: capitalize;
         }
 
         .container {
@@ -51,8 +52,11 @@
 
         .progress-bar-inner {
             background-color: rgb(11, 208, 11);
-            ;
             height: 100%;
+        }
+
+        .completed {
+            background-color: blue;
         }
 
         .edit-button {
@@ -76,6 +80,18 @@
             cursor: pointer;
             margin-top: 20px;
         }
+
+        .delete-button {
+            position: absolute;
+            top: 45px;
+            right: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -94,18 +110,32 @@
                     {% for goal in goals %}
                     <div class="goal-card">
                         <h2> {{ goal.name }} </h2>
-                        <p>Amount: Rs {{ goal.amount }}  </p>
-                        <p>Achieved: Rs {{ goal.achieved }}  </p>
+                        <p>Amount: Rs {{ goal.amount }} </p>
+                        <p>Achieved: Rs {{ goal.achieved }} </p>
                         <div class="progress-bar">
-                            <div class="progress-bar-inner" style="text-align: center;color:white; width:{{goal.percentage}}%"> {{ goal.percentage }}% </div>
-                            <!-- <div class="progress-bar-inner" style="width:50%; text-align: center;color:white"> 50 %</div> -->
+                            <div class="progress-bar-inner {% if goal.percentage == 100 %}completed{% endif %}"
+                                style="text-align: center; color: white; width: {{ goal.percentage }}%">
+                                {{ goal.percentage }}%
+                            </div>
+
                         </div>
                         <a href="editGoal?gid={{ goal.id }}" class="edit-button">Edit</a>
+                        <a href="goalDelete?gid={{ goal.id }}" class="delete-button">Delete</a>
                     </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $(window).bind("pageshow", function (event) {
+                if (event.originalEvent.persisted) {
+                    console.log("Back!");
+                    location.reload();
+                }
+            });
+        </script>
 </body>
 
 </html>

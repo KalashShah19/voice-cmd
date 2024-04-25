@@ -81,18 +81,18 @@
             <form id="form">
                 <div class="form-group">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" value="{{ goal[3] }}" name="name" required>
+                    <input type="text" id="name" value="{{ goal[1] }}" name="name" required>
                 </div>
                 <div class="form-group">
                     <label for="amount">Amount:</label>
-                    <input type="number" id="amount" value="{{ goal[4] }}" name="amount" required>
+                    <input type="number" id="amount" value="{{ goal[3] }}" name="amount" required>
                 </div>
                 <div class="form-group">
                     <label for="amount">Achieved:</label>
                     <input type="number" id="achieved" value="{{ goal[4] }}" name="achieved" required>
                 </div>
                 <div class="form-group">
-                    <input type="hidden" value="{{ goal[0] }}" name="gid">
+                    <input type="hidden" id="gid" value="{{ goal[0] }}" name="gid">
                 </div>
                 <input type="submit" value="Update">
             </form>
@@ -101,10 +101,19 @@
     <script>
         document.getElementById("form").addEventListener("submit", function (event) {
             event.preventDefault();
-            var formData = new FormData(this);
-            fetch("/editGoal", {
+            var name = document.getElementById("name").value;
+            var amount = document.getElementById("amount").value;
+            var achieved = document.getElementById("achieved").value;
+            var gid = document.getElementById("gid").value;
+
+            const data = { name : name, amount : amount, achieved : achieved, gid : gid }
+            console.log(data);
+            fetch("goalEdit", {
                 method: "POST",
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
             })
                 .then(response => {
                     if (response.ok) {
