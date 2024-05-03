@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 14, 2024 at 10:51 AM
+-- Generation Time: May 03, 2024 at 05:28 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -40,7 +40,7 @@ CREATE TABLE `accounts` (
 --
 
 INSERT INTO `accounts` (`number`, `id`, `name`, `balance`, `type`) VALUES
-(5451300, 19, 'ICICI', 25000, 'savings');
+(100020029, 19, 'BOB', 25000, 'savings');
 
 -- --------------------------------------------------------
 
@@ -63,7 +63,7 @@ CREATE TABLE `budgets` (
 --
 
 INSERT INTO `budgets` (`bid`, `name`, `amount`, `remaining`, `description`, `date`, `id`) VALUES
-(1, 'travel', '8000.00', '1000.00', NULL, NULL, 19);
+(1, 'travel', '8000.00', '500.00', NULL, NULL, 19);
 
 -- --------------------------------------------------------
 
@@ -85,9 +85,9 @@ CREATE TABLE `goals` (
 --
 
 INSERT INTO `goals` (`gid`, `name`, `description`, `amount`, `achieved`, `id`) VALUES
-(1, 'Car', 'Buy car by the end of this year', 1700000, 50000, 19),
-(8, 'travel', NULL, 15000, 5000, 19),
-(9, 'trip', NULL, 5000, 5000, 19);
+(1, 'Car', 'Buy car by the end of this year', 1900000, 1700000, 19),
+(8, 'travel', NULL, 1, 1, 19),
+(12, 'play station 5', NULL, 50000, 50000, 19);
 
 -- --------------------------------------------------------
 
@@ -137,7 +137,7 @@ CREATE TABLE `records` (
 
 INSERT INTO `records` (`rid`, `bid`, `type`, `name`, `amount`, `id`) VALUES
 (7, 1, 'income', 'Budget', '5000.00', 19),
-(8, 1, 'expense', 'Tickets Booking', '1000.00', 19),
+(8, 1, 'expense', 'Tickets Booking', '1500.00', 19),
 (9, 1, 'expense', 'Food', '1500.00', 19),
 (10, 1, 'expense', 'Hotel Booking', '1500.00', 19),
 (15, 2, 'income', 'Budget', '1500.00', 19),
@@ -220,13 +220,13 @@ ALTER TABLE `accounts`
 -- AUTO_INCREMENT for table `budgets`
 --
 ALTER TABLE `budgets`
-  MODIFY `bid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `bid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `goals`
 --
 ALTER TABLE `goals`
-  MODIFY `gid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `gid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `investments`
@@ -238,7 +238,7 @@ ALTER TABLE `investments`
 -- AUTO_INCREMENT for table `records`
 --
 ALTER TABLE `records`
-  MODIFY `rid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `rid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `users`

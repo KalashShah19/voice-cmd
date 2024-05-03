@@ -72,12 +72,33 @@ def ai():
 @app.route('/dashboard')
 def dashboard():
     if 'id' in session:
+        id = session.get("id")
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT * FROM accounts where id = %s", (id,))  
+        account = cursor.fetchone()
+        
+        cursor.execute("SELECT * FROM budgets where id = %s", (id,))  
+        budget = cursor.fetchone()
+        
+        cursor.execute("SELECT * FROM goals where id = %s", (id,))  
+        goal = cursor.fetchone()    
+        if goal[3] > 0:
+            percentage = (goal[4] / goal[3]) * 100
+            percentage = int(percentage)
+        else:
+            percentage = 0    
+        
+        cursor.execute("SELECT * FROM records where id = %s order by rid DESC", (id,))  
+        record = cursor.fetchone()        
+        
+        cursor.execute("SELECT * FROM investments where id = %s", (id,))  
+        investment = cursor.fetchone()        
+        
         name = str(session.get('username'))
-        return render_template('dashboard.html', name = name)
+        return render_template('dashboard.html', name = name, account = account, budget = budget, goal = goal, record = record, investment = investment, perc = percentage)
     else :
         js = "<script> alert('Do Login First!'); window.location.href='login'; </script>"
-        return js 
-
+        return js   
 
 @app.route('/budgets')
 def budgets():
@@ -273,7 +294,6 @@ def createBudget():
     if name is None or amount is None:
         return jsonify({'error': 'Name and amount are required parameters'}), 400
 
-    print("name = " + name + " amount = "  + amount)
     cursor = mysql.connection.cursor()
     cursor.execute("INSERT INTO budgets (name, amount, remaining) VALUES (%s, %s, %s)", (name, amount, amount))
     mysql.connection.commit()
@@ -680,6 +700,33 @@ def goalDelete():
     cursor.close()
     alert_script = "<script>alert('Goal Deleted!');  window.history.back();</script>"
     return render_template_string(alert_script)
+
+@app.route('/balance')
+def balance():
+    cursor = mysql.connection.cursor()
+    id = session.get("id")
+
+    try:
+        cursor.execute("SELECT * FROM accounts where id = %s", (id,))
+        accounts = cursor.fetchall()
+
+        if not accounts:
+            return jsonify([]) 
+
+        account_details = []
+        for account in accounts:
+            account_details.append({
+                'id': account[0],
+                'name': account[1],
+                'balance': account[2],
+                'account_type': account[3]
+            })
+
+        return jsonify(account_details)
+
+    except Exception as e:
+        cursor.close()
+        return str(e), 500  
 
 if __name__ == '__main__':
     app.run(debug=True)

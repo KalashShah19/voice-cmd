@@ -39,6 +39,7 @@
         figcaption {
             margin: 0;
             padding: 0;
+            text-transform: capitalize;
         }
 
         button {
@@ -150,45 +151,43 @@
                 <div class="dashboard">
                     <h2>Overview</h2>
                     <div class="card">
-                        <h3>Total Balance</h3>
+                        <h3> {{ account[2] }} Balance </h3>
                         <ul>
                             <li>
-                                <p>1,500.00 Rs</p>
+                                <p> {{ account[3] }} Rs</p>
                             </li>
                         </ul>
                     </div>
                     <h2>Goals</h2>
                     <div class="card">
                         <h3>Financial Goals</h3>
-                        <p>Car </p>
+                        <p> {{ goal[1] }} </p>
                         <div class="bar">
-                            <div class="progress" style="width:50%"> <span> 50% </span></div>
+                            <div class="progress" style="width:{{ perc }}%"> <span> {{perc}} % </span></div>
                         </div>
-                        <span id="cureent"> 50000 </span> / <span id="total"> 1000000</span>
+                        <span id="cureent"> {{ goal[3] }} </span> / <span id="total"> {{goal[4]}} </span>
                     </div>
                     <h2>Recent Transactions</h2>
                     <div class="card">
                         <ul>
-                            <li class="income"> Transaction 1: $50.00</li>
-                            <li class="expense">Transaction 2: $100.00</li>
-                            <li class="income">Transaction 3: $75.00</li>
+                            <li class="expense"> {{ record[3] }} - {{ record[4] }} Rs </li>
                         </ul>
                     </div>
                     <h2>Budgets</h2>
                     <div class="card">
-                        <h3>Monthly Budget</h3>
+                        <h3> {{ budget[1] }}</h3>
                         <ul>
                             <li>
-                                <p>$500.00</p>
+                                <p> {{budget[2]}} rs </p>
                             </li>
                         </ul>
                     </div>
                     <h2>Investments</h2>
                     <div class="card">
-                        <h3>Stock Portfolio</h3>
+                        <h3> {{ investment[2] }} </h3>
                         <ul>
                             <li>
-                                <p>Total value: $10,000.00</p>
+                                <p> {{investment[5]}} Rs </p>
                             </li>
                         </ul>
                     </div>
